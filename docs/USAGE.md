@@ -11,7 +11,7 @@ cd frontend
 npm run build
 ```
 
-ビルドが完了すると、`frontend/dist/assets/` ディレクトリ内に `index-XXXXX.js` といったファイルが生成されます。このファイルがWebパーツの本体となります。
+ビルドが完了すると、`frontend/dist/` ディレクトリ内に `webform.js` というファイルが生成されます。このファイルがWebパーツの本体となります。
 ※将来的にCDN（Cloudflare Pages等）へデプロイした場合は、その公開URLを利用します。
 
 ## 2. 埋め込み方法
@@ -23,11 +23,8 @@ npm run build
 HTMLの `<head>` 内、または `</body>` の直前に、生成されたJavaScriptファイル（またはCDNのURL）をモジュールとして読み込みます。
 
 ```html
-<!-- 例: 同一サーバー内にスクリプトを配置した場合 -->
-<script type="module" src="./assets/index-XXXXX.js"></script>
-
-<!-- 例: Cloudflare Pages等のCDNから読み込む場合 -->
-<!-- <script type="module" src="https://your-domain.pages.dev/assets/index.js"></script> -->
+<!-- 今回デプロイしたCloudflare Pagesから読み込む場合の記述 -->
+<script type="module" src="https://webform-9ck.pages.dev/webform.js"></script>
 ```
 
 ### ② カスタムタグの配置
