@@ -44,6 +44,32 @@ export async function sendWaitlistConfirmationEmail(
   }
 }
 
+type WaitlistConfirmedParams = {
+  to: string
+  projectName: string
+  rank: number
+  rankCheckUrl: string
+}
+
+export async function sendWaitlistConfirmedEmail(
+  ctx: EmailContext,
+  params: WaitlistConfirmedParams,
+): Promise<void> {
+  const resend = new Resend(ctx.apiKey)
+
+  const { error } = await resend.emails.send({
+    from: ctx.fromAddress,
+    to: params.to,
+    subject: `【保管してください】${params.projectName} ウェイトリスト登録が完了しました`,
+    text: renderConfirmedText(params),
+    html: renderConfirmedHtml(params),
+  })
+
+  if (error) {
+    throw new Error(`sendWaitlistConfirmedEmail failed: ${JSON.stringify(error)}`)
+  }
+}
+
 type UnsubscribedParams = {
   to: string
   projectName: string
@@ -136,6 +162,73 @@ function renderConfirmationHtml(params: WaitlistConfirmationParams): string {
 
   <p style="color: #6b7280; font-size: 0.875rem; margin-top: 16px;">
     もしこの登録に心当たりがない場合は、このメールを無視してください。
+  </p>
+
+  <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;">
+  <p style="color: #6b7280; font-size: 0.75rem;">
+    このメールは <a href="https://launchia.net" style="color: #6b7280;">Launchia</a> からお送りしています。
+  </p>
+</body>
+</html>`
+}
+
+function renderConfirmedText(params: WaitlistConfirmedParams): string {
+  return [
+    `${params.projectName} のウェイトリストへの登録が完了しました！`,
+    '',
+    `あなたの順位: ${params.rank} 番目`,
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '★ このメールは大切に保管してください ★',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '',
+    '下記はあなた専用のリンクです。',
+    '今後の順位確認・登録解除は、このリンクから行えます。',
+    'メールを削除すると順位を確認できなくなりますので、保管をおすすめします。',
+    '',
+    params.rankCheckUrl,
+    '',
+    'リリースの際は、ご登録のメールアドレスにご連絡します。',
+    '',
+    '---',
+    'このメールは Launchia (https://launchia.net) からお送りしています。',
+  ].join('\n')
+}
+
+function renderConfirmedHtml(params: WaitlistConfirmedParams): string {
+  const project = escapeHtml(params.projectName)
+  const url = escapeAttr(params.rankCheckUrl)
+  return `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>${project} のウェイトリスト登録完了</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; line-height: 1.6; color: #1f2937; max-width: 560px; margin: 0 auto; padding: 24px;">
+  <h1 style="font-size: 1.25rem; margin-bottom: 16px;">🎉 登録が完了しました</h1>
+  <p><strong>${project}</strong> のウェイトリストへの登録が完了しました。</p>
+
+  <div style="background: #f3f4f6; padding: 24px; border-radius: 8px; text-align: center; margin: 24px 0;">
+    <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 8px;">あなたの順位</div>
+    <div style="font-size: 2.5rem; font-weight: 700; color: #3b82f6;">${params.rank} 番目</div>
+  </div>
+
+  <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 16px; margin: 24px 0;">
+    <p style="margin: 0 0 8px; font-weight: 700; color: #92400e;">⚠️ このメールは大切に保管してください</p>
+    <p style="margin: 0; font-size: 0.875rem; color: #92400e;">
+      下記はあなた専用のリンクです。今後の<strong>順位確認・登録解除</strong>はこのリンクから行えます。
+      メールを削除すると順位を確認できなくなりますので、保管をおすすめします。
+    </p>
+  </div>
+
+  <p style="margin: 24px 0; text-align: center;">
+    <a href="${url}" style="background: #3b82f6; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; display: inline-block; font-weight: 600;">
+      順位を確認する
+    </a>
+  </p>
+
+  <p style="color: #6b7280; font-size: 0.875rem;">
+    リリースの際は、ご登録のメールアドレスにご連絡します。
   </p>
 
   <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;">

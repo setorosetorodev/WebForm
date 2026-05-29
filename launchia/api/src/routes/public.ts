@@ -23,6 +23,7 @@ import {
   createEmailContext,
   sendUnsubscribedEmail,
   sendWaitlistConfirmationEmail,
+  sendWaitlistConfirmedEmail,
 } from '../lib/email'
 
 const publicRoutes = new Hono<{ Bindings: Env }>()
@@ -219,6 +220,21 @@ publicRoutes.get('/rank/:token', async (c) => {
 
   const totalCount = await getActiveCount(db, lookup.entry.projectId)
   const rank = await getActiveRank(db, lookup.entry.projectId, lookup.entry.id)
+
+  // 初回確認のときだけ「登録完了メール」を送る（順位確認リンクを保管してもらう）
+  if (justConfirmed) {
+    try {
+      const emailCtx = createEmailContext(c.env)
+      await sendWaitlistConfirmedEmail(emailCtx, {
+        to: lookup.entry.email,
+        projectName: project.name,
+        rank: rank ?? lookup.entry.position,
+        rankCheckUrl: `${c.env.APP_BASE_URL}/r/${token}`,
+      })
+    } catch (err) {
+      console.error('Failed to send confirmed email:', err)
+    }
+  }
 
   const userAgent = c.req.header('User-Agent')
   const userAgentHash = await hashUserAgent(userAgent)
