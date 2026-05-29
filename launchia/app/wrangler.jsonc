@@ -15,6 +15,6 @@
     }
   ],
   "vars": {
-    "INTERNAL_API_URL": "https://launchia-api.setorosetorodev.workers.dev"
+    "INTERNAL_API_URL": "https://api.launchia.net"
   }
 }
