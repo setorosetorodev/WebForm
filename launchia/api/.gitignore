@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+.env
+.env.local
+*.log
+
+# Drizzle: コミットするのは drizzle/*.sql と meta/*.json のみ、
+# キャッシュやローカル journal が混ざる場合はここで除外
+drizzle/.cache/

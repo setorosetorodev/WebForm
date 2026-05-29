@@ -1,0 +1,20 @@
+name = "launchia-api"
+main = "src/index.ts"
+compatibility_date = "2026-05-28"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+APP_BASE_URL = "http://localhost:3000"
+ENVIRONMENT = "development"
+
+# Secrets (set via `wrangler secret put <NAME>`):
+#   DATABASE_URL
+#   RESEND_API_KEY
+#   SESSION_SECRET
+
+[env.production]
+name = "launchia-api"
+
+[env.production.vars]
+APP_BASE_URL = "https://launchia.net"
+ENVIRONMENT = "production"

@@ -1,0 +1,2 @@
+ALTER TABLE "launchia_waitlist_entries" ADD COLUMN "confirmed_at" timestamp with time zone;--> statement-breakpoint
+CREATE INDEX "launchia_waitlist_entries_active_confirmed_position_idx" ON "launchia_waitlist_entries" USING btree ("project_id","position") WHERE "launchia_waitlist_entries"."deleted_at" IS NULL AND "launchia_waitlist_entries"."confirmed_at" IS NOT NULL;

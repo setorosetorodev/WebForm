@@ -1,0 +1,11 @@
+# Neon の Postgres 接続文字列。pooler の URL を推奨。
+# 例: postgresql://user:pass@ep-xxxxx.ap-southeast-1.aws.neon.tech/launchia?sslmode=require
+DATABASE_URL=
+
+# Resend の API キー。
+# https://resend.com/api-keys から発行。
+RESEND_API_KEY=
+
+# セッション Cookie 署名鍵。十分な長さ（32 bytes 以上）のランダム文字列。
+# 生成例: node -e "console.log(crypto.randomBytes(32).toString('base64'))"
+SESSION_SECRET=
