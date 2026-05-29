@@ -53,14 +53,14 @@
   <body>
     <div class="test-container">
       <h1>Launchia Widget - LP 埋め込みデモ</h1>
-      <div class="subtitle">api-url を localhost:8788 (wrangler dev) に向けています</div>
+      <div class="subtitle">本番 api (api.launchia.net) に接続したライブデモ</div>
 
       <div class="test-section">
         <h2>パターン 1: 最小構成</h2>
         <div class="desc">project-slug + api-url のみ。同意チェックボックスは表示しない。</div>
         <launchia-widget
           project-slug="dasune-test"
-          api-url="http://localhost:8788">
+          api-url="https://api.launchia.net">
         </launchia-widget>
       </div>
 
@@ -69,7 +69,7 @@
         <div class="desc">require-consent="true" でプライバシー同意が必須になる。</div>
         <launchia-widget
           project-slug="dasune-test"
-          api-url="http://localhost:8788"
+          api-url="https://api.launchia.net"
           require-consent="true">
         </launchia-widget>
       </div>
