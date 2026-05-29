@@ -13,7 +13,7 @@ port = 8787
 # 本番デプロイ時の基点（メールリンクの生成に使用）= 本番 app の URL。
 # ローカル開発では .dev.vars の APP_BASE_URL=http://localhost:3000 が上書きする。
 APP_BASE_URL = "https://launchia.net"
-ENVIRONMENT = "development"
+ENVIRONMENT = "production"
 
 # Secrets (set via `wrangler secret put <NAME>`):
 #   DATABASE_URL
