@@ -3,6 +3,12 @@ main = "src/index.ts"
 compatibility_date = "2026-05-28"
 compatibility_flags = ["nodejs_compat"]
 
+# dev ポートを固定 (app の rewrites 先 INTERNAL_API_URL と一致させる)。
+# 既定 8787 のままだが、明示することで「8787 が塞がっていたら別ポートに
+# ずれて app と不一致になる」事故を防ぐ (塞がっていれば起動失敗してくれる)。
+[dev]
+port = 8787
+
 [vars]
 APP_BASE_URL = "http://localhost:3000"
 ENVIRONMENT = "development"
