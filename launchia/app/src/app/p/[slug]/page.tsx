@@ -31,9 +31,9 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params
   const data = await fetchProject(slug)
-  if (!data) return { title: 'プロジェクトが見つかりません - Launchia' }
+  if (!data) return { title: 'プロジェクトが見つかりません｜Launchia ウェイトリスト' }
 
-  const title = `${data.name} - ローンチを待つ | Launchia`
+  const title = `${data.name}｜Launchia ウェイトリスト`
   const description =
     data.description?.slice(0, 160) ?? `${data.name} のウェイトリストに登録しましょう。`
   return {

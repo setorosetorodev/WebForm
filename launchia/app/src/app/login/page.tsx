@@ -1,7 +1,7 @@
 import { LoginForm } from './login-form'
 
 export const metadata = {
-  title: 'ログイン - Launchia',
+  title: 'ログイン｜Launchia 管理画面',
 }
 
 export default function LoginPage() {
@@ -16,7 +16,9 @@ export default function LoginPage() {
         <LoginForm />
 
         <div className="text-xs text-gray-400 text-center mt-8 leading-relaxed">
-          パスワードは不要です。メールに届くリンクをクリックしてログインします。
+          パスワードは不要です。
+          <br />
+          メールに届くリンクをクリックしてログインします。
           <br />
           新規の方は招待コードが必要です。
         </div>

@@ -1,5 +1,10 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { UnsubscribeButton } from './unsubscribe-button'
+
+export const metadata: Metadata = {
+  title: '順位確認｜Launchia ウェイトリスト',
+}
 
 type RankData = {
   rank: number
