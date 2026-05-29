@@ -8,12 +8,13 @@ type Project = {
   ideaPagePublic: boolean
 }
 
+// 暫定: 現在の本番テスト URL。独自ドメイン (launchia.net) 割当時に戻す。
 const WIDGET_SRC =
-  process.env.NEXT_PUBLIC_WIDGET_SRC ?? 'https://widget.launchia.net/launchia-widget.js'
+  process.env.NEXT_PUBLIC_WIDGET_SRC ?? 'https://launchia-widget.pages.dev/launchia-widget.js'
 const PUBLIC_API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'https://api.launchia.net'
+  process.env.NEXT_PUBLIC_API_URL ?? 'https://launchia-api.setorosetorodev.workers.dev'
 const IDEA_PAGE_BASE =
-  process.env.NEXT_PUBLIC_IDEA_PAGE_BASE ?? 'https://launchia.net'
+  process.env.NEXT_PUBLIC_IDEA_PAGE_BASE ?? 'https://launchia-app.setorosetorodev.workers.dev'
 
 export function EmbedInfo({ project }: { project: Project }) {
   const [copied, setCopied] = useState<string | null>(null)
