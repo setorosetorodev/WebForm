@@ -8,9 +8,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "cf:build": "next build --webpack && opennextjs-cloudflare build --skipNextBuild",
+    "cf:preview": "next build --webpack && opennextjs-cloudflare build --skipNextBuild && opennextjs-cloudflare preview",
+    "cf:deploy": "next build --webpack && opennextjs-cloudflare build --skipNextBuild && opennextjs-cloudflare deploy"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.19.11",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"
@@ -24,6 +28,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.95.0"
   }
 }
