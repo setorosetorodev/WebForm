@@ -64,3 +64,19 @@
 - **破壊的操作（本番 DB / DNS）は実行前に確認**を挟む。対象を厳密に絞る（例: `launchia_*` のみ）。
 - 小さな単発作業は、まず手作業/コンソール（Neon コンソール等）を提案してからスクリプト化を検討。
 - **状態が変わったらこの CLAUDE.md と docs を更新**し、resume なしで次回再開できる状態を保つ。
+
+## 開発日誌（AIの一言）— たまWEB 連携
+
+作業を一区切りして**コミットを宣言するタイミング**で、その日やったこと・感じたことを
+**1〜3行・一人称**のコメントにして記録する（「クロさんの一言」。Gemini 等が書く場合は `author` を変える）。
+これは setorosetoro.com（たまWEB）が全プロジェクト横断で集める開発日誌の素材になる。
+
+- **投稿方法（稼働中・2026-05-31〜）**: 中央システム（`setorosetoro.com/api/devlog` + Cloudflare D1）が**本番稼働済み**。作業区切りのコミット宣言時に POST する:
+  ```
+  node scripts/devlog.mjs "<本文（1〜3行、その日の手応え・気づき・つまずき）>" [mood]
+  ```
+  - `DEVLOG_WRITE_TOKEN` と `DEVLOG_PROJECT=launchia` はこのリポジトリの `.dev.vars`（gitignore 済・**コミット禁止**）に設定済み。endpoint 既定は本番。
+  - `author` 既定 `claude`（クロさん）。Gemini 等は `--author=gemini`。社外秘は `--private`。
+- **project slug**: `launchia`
+- git commit / push とは独立の行為（投稿してから通常どおりコミットしてよい）。
+- 仕様詳細は たまWEB リポジトリ（TamaDev50-WEB）の `docs/devlog-spec.md`。`docs/devlog-seed.md` に溜めた旧分があれば、一度だけ POST で投入してよい（任意）。
