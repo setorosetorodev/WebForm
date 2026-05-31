@@ -4,9 +4,10 @@
  * 各プロジェクト(だすね・launchia・たまWEB・今後)の scripts/ に置いて使う。仕様: TamaDev50-WEB の docs/devlog-spec.md。
  *
  * 使い方:
- *   node scripts/devlog.mjs "<本文>" [mood] [--project=slug] [--author=claude] [--private] [--commit=<hash>]
+ *   node scripts/devlog.mjs "<本文>" [mood] [--project=slug] [--author=claude] [--private] [--commit=<hash>] [--date=YYYY-MM-DD|ISO]
  * 例:
  *   node scripts/devlog.mjs "今日はXを直した" 🎉
+ *   node scripts/devlog.mjs "過去の事例を後追い記録" 🛠️ --project=dasune --date=2025-11-20   # バックフィル
  *
  * 設定(コミットしない。各リポジトリの .dev.vars か .env、または環境変数):
  *   DEVLOG_WRITE_TOKEN  … 書き込みトークン(必須)
@@ -63,6 +64,13 @@ if (!project) {
   process.exit(1);
 }
 
+// --date: 過去日のバックフィル用。YYYY-MM-DD は当日 00:00 UTC に展開、それ以外はそのまま送る(API が ISO 正規化)。
+let createdAt = null;
+const dateArg = flags.date ?? flags.at;
+if (dateArg && dateArg !== true) {
+  createdAt = /^\d{4}-\d{2}-\d{2}$/.test(dateArg) ? `${dateArg}T00:00:00.000Z` : dateArg;
+}
+
 const payload = {
   project,
   author: flags.author || 'claude',
@@ -70,6 +78,7 @@ const payload = {
   mood: mood || flags.mood || null,
   commit_hash: flags.commit || null,
   visibility: flags.private ? 'private' : 'public',
+  created_at: createdAt,
 };
 
 const res = await fetch(endpoint, {
@@ -84,4 +93,5 @@ if (!res.ok) {
   process.exit(1);
 }
 const json = await res.json().catch(() => ({}));
-console.log(`✓ devlog 投稿: id=${json.id ?? '?'} project=${payload.project} author=${payload.author}`);
+const when = createdAt ? ` date=${createdAt.slice(0, 10)}(backfill)` : '';
+console.log(`✓ devlog 投稿: id=${json.id ?? '?'} project=${payload.project} author=${payload.author}${when}`);

@@ -77,6 +77,13 @@
   ```
   - `DEVLOG_WRITE_TOKEN` と `DEVLOG_PROJECT=launchia` はこのリポジトリの `.dev.vars`（gitignore 済・**コミット禁止**）に設定済み。endpoint 既定は本番。
   - `author` 既定 `claude`（クロさん）。Gemini 等は `--author=gemini`。社外秘は `--private`。
+- **過去事例のバックフィル（日付指定）**: 投稿日時を `--date` で指定できる。過去ドキュメントを見ながら後追いで記録するとき:
+  ```
+  node scripts/devlog.mjs "<過去の一言>" 🛠️ --date=2025-11-20            # YYYY-MM-DD は当日 00:00(UTC)
+  node scripts/devlog.mjs "<過去の一言>" 🛠️ --date=2025-11-20T14:05:00Z  # 時刻(秒)まで可
+  ```
+  - 保存は **UTC・ISO8601**（D1=SQLite は日時を TEXT で保持。辞書順＝時系列順で正しく並ぶ）。`--date` 未指定なら現在時刻。
+  - 同日に複数入れる場合、時刻まで付けると並びが安定（時刻なしは挿入順）。日付は実際の開発日に合わせる。
 - **project slug**: `launchia`
 - git commit / push とは独立の行為（投稿してから通常どおりコミットしてよい）。
 - 仕様詳細は たまWEB リポジトリ（TamaDev50-WEB）の `docs/devlog-spec.md`。`docs/devlog-seed.md` に溜めた旧分があれば、一度だけ POST で投入してよい（任意）。
