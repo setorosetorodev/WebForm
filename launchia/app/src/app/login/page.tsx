@@ -22,6 +22,12 @@ export default function LoginPage() {
           <br />
           新規の方は招待コードが必要です。
         </div>
+
+        <div className="text-xs text-fg-faint text-center mt-6">
+          <a href="/privacy" className="hover:text-fg-soft hover:underline">
+            プライバシーポリシー
+          </a>
+        </div>
       </div>
     </main>
   )

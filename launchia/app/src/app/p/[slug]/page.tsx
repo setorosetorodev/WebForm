@@ -126,7 +126,7 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
       <footer className="border-t border-line mt-16">
         <div className="max-w-3xl mx-auto px-4 py-8 flex items-center justify-between text-xs text-fg-faint">
           <div>Powered by Launchia</div>
-          <a href="https://launchia.net/privacy" className="hover:text-fg-soft">
+          <a href="/privacy" className="hover:text-fg-soft">
             プライバシーポリシー
           </a>
         </div>

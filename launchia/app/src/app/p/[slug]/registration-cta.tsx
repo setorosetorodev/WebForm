@@ -145,7 +145,7 @@ export function RegistrationCta({
             />
             <span>
               <a
-                href="https://launchia.net/privacy"
+                href="/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
