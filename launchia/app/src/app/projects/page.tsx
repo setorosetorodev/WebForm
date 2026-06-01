@@ -21,7 +21,7 @@ export default async function ProjectsPage() {
         <h1 className="text-2xl font-bold text-gray-900">プロジェクト</h1>
         <Link
           href="/projects/new"
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg"
+          className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg"
         >
           + 新規作成
         </Link>
@@ -38,7 +38,7 @@ export default async function ProjectsPage() {
           </div>
           <Link
             href="/projects/new"
-            className="inline-block text-blue-600 hover:underline text-sm"
+            className="inline-block text-brand-600 hover:underline text-sm"
           >
             最初のプロジェクトを作成する →
           </Link>
@@ -49,7 +49,7 @@ export default async function ProjectsPage() {
             <Link
               key={p.id}
               href={`/projects/${p.id}`}
-              className="block bg-white rounded-xl p-5 border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all"
+              className="block bg-white rounded-xl p-5 border border-gray-200 hover:border-brand-300 hover:shadow-sm transition-all"
             >
               <div className="flex items-center justify-between gap-3 mb-2">
                 <h2 className="font-bold text-gray-900">{p.name}</h2>
@@ -60,7 +60,7 @@ export default async function ProjectsPage() {
                     </span>
                   )}
                   {p.ideaPagePublic && (
-                    <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded">
+                    <span className="px-2 py-0.5 bg-brand-50 text-brand-700 rounded">
                       アイデア公開
                     </span>
                   )}

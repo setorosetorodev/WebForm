@@ -47,6 +47,7 @@
 その他の小タスク: DMARC を数日後 `p=none`→`p=quarantine` に引き上げ。
 
 ## docs インデックス（信頼できる正の情報源）
+- `docs/DESIGN.md` … **デザインの正**（デザイントークン / 配色 / コンポーネント規約。リブランドはここと globals.css を更新）
 - `docs/20260527_launchia_Project.md` … PRD（全体像・ロードマップ）
 - `docs/20260528_launchia_phase1_mvp_requirements.md` … Phase 1 詳細要件（データモデル/API/UI 仕様の正）
 - `docs/20260529_launchia_phase2_design_notes.md` … **Phase 2 設計検討（次の着手先）**

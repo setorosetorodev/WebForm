@@ -1,26 +1,47 @@
 @import "tailwindcss";
 
+/* ============================================================================
+   Launchia デザイントークン — 単一の正 (Single Source of Truth)
+   ----------------------------------------------------------------------------
+   ルール・各トークンの役割・命名規約は docs/DESIGN.md を参照。
+
+   ブランド（アクセント）色を変えたいときは、この @theme の --color-brand-*
+   の右辺だけ差し替えれば、全ページ・全コンポーネントに反映される。
+   各ページは brand-* ユーティリティ（bg-brand-600 等）を参照するだけで、
+   個別ファイルに色のリテラルを書かない。
+
+   現状の値は Tailwind 標準の "blue" と同一（oklch 値をそのまま採用）。
+   そのため、トークン化による見た目の変化は無い。
+   Web フォントや配色の刷新は STITCH でのデザイン確定後にここで差し替える。
+   ============================================================================ */
+@theme {
+  /* --- ブランド / アクセント（= 現状 blue 相当） --------------------------- */
+  --color-brand-50: oklch(97% 0.014 254.604);
+  --color-brand-100: oklch(93.2% 0.032 255.585);
+  --color-brand-300: oklch(80.9% 0.105 251.813);
+  --color-brand-500: oklch(62.3% 0.214 259.815);
+  --color-brand-600: oklch(54.6% 0.245 262.881);
+  --color-brand-700: oklch(48.8% 0.243 264.376);
+  --color-brand-900: oklch(37.9% 0.146 265.522);
+
+  /* --- 本文フォント -------------------------------------------------------
+     現状はシステムフォント（OS 標準 UI フォント）。
+     Web フォント（Geist 等）導入はデザイン確定後に検討。 */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+}
+
+/* セマンティックな面の色（body 背景・基本文字色）。
+   ※ アプリ各ページは bg-gray-50 / bg-white 等を直接指定しており、
+   現状ダークモードには未対応（ライト固定）。対応は DESIGN.md 参照。 */
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }

@@ -49,11 +49,11 @@ export default async function RankCheckPage(props: PageProps<'/r/[token]'>) {
         <div className="text-sm font-semibold text-gray-700">{data.project_name}</div>
         <div className="text-xs text-gray-400 mt-1 mb-6">ウェイトリストの順位確認</div>
 
-        <div className="bg-blue-50 rounded-xl py-8 px-4 text-center mb-6">
+        <div className="bg-brand-50 rounded-xl py-8 px-4 text-center mb-6">
           <div className="text-xs text-gray-600 mb-2">現在の順位</div>
           <div>
-            <span className="text-6xl font-extrabold text-blue-600">{data.rank}</span>
-            <span className="text-2xl font-semibold text-blue-600 ml-1">番目</span>
+            <span className="text-6xl font-extrabold text-brand-600">{data.rank}</span>
+            <span className="text-2xl font-semibold text-brand-600 ml-1">番目</span>
           </div>
           <div className="text-xs text-gray-500 mt-3">総登録者 {data.total_count} 人中</div>
         </div>

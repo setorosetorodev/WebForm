@@ -9,7 +9,7 @@ export default function NotFound() {
         </p>
         <a
           href="https://launchia.net"
-          className="inline-block mt-6 text-sm text-blue-600 hover:underline"
+          className="inline-block mt-6 text-sm text-brand-600 hover:underline"
         >
           Launchia へ戻る
         </a>

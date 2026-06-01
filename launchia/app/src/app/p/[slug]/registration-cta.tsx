@@ -106,8 +106,8 @@ export function RegistrationCta({
           すでに {projectName} に登録済みです
         </div>
         <div className="mt-3">
-          <span className="text-4xl font-extrabold text-blue-600">{rank}</span>
-          <span className="text-lg font-semibold text-blue-600 ml-1">番目</span>
+          <span className="text-4xl font-extrabold text-brand-600">{rank}</span>
+          <span className="text-lg font-semibold text-brand-600 ml-1">番目</span>
         </div>
         <div className="text-xs text-gray-500 mt-2">
           確認メール内の URL から、いつでも順位を確認できます。
@@ -128,7 +128,7 @@ export function RegistrationCta({
         placeholder="メールアドレス"
         disabled={state === 'submitting'}
         autoComplete="email"
-        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:opacity-50 invalid:border-red-300"
+        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 disabled:opacity-50 invalid:border-red-300"
       />
 
       {requireConsent && (
@@ -141,14 +141,14 @@ export function RegistrationCta({
                 setConsent(e.target.checked)
                 if (e.target.checked) setConsentError(false)
               }}
-              className="w-4 h-4 accent-blue-600"
+              className="w-4 h-4 accent-brand-600"
             />
             <span>
               <a
                 href="https://launchia.net/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
+                className="text-brand-600 hover:underline"
               >
                 プライバシーポリシー
               </a>
@@ -166,7 +166,7 @@ export function RegistrationCta({
       <button
         type="submit"
         disabled={state === 'submitting'}
-        className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {state === 'submitting' ? '送信中...' : 'ウェイトリストに登録'}
       </button>

@@ -66,7 +66,7 @@ export function NewProjectForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="例: だすね"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
         />
       </div>
 
@@ -86,7 +86,7 @@ export function NewProjectForm() {
           value={slug}
           onChange={(e) => setSlug(e.target.value.toLowerCase())}
           placeholder="例: dasune"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 font-mono text-sm"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 font-mono text-sm"
         />
       </div>
 
@@ -100,7 +100,7 @@ export function NewProjectForm() {
           maxLength={2000}
           rows={3}
           placeholder="プロジェクトの説明..."
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
         />
       </div>
 
@@ -110,7 +110,7 @@ export function NewProjectForm() {
             type="checkbox"
             checked={ideaPagePublic}
             onChange={(e) => setIdeaPagePublic(e.target.checked)}
-            className="w-4 h-4 accent-blue-600"
+            className="w-4 h-4 accent-brand-600"
           />
           <span className="text-sm text-gray-700">
             アイデアページを公開する{' '}
@@ -124,7 +124,7 @@ export function NewProjectForm() {
             type="checkbox"
             checked={embedEnabled}
             onChange={(e) => setEmbedEnabled(e.target.checked)}
-            className="w-4 h-4 accent-blue-600"
+            className="w-4 h-4 accent-brand-600"
           />
           <span className="text-sm text-gray-700">埋め込みウィジェットを有効にする</span>
         </label>
@@ -139,7 +139,7 @@ export function NewProjectForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {pending ? '作成中...' : 'プロジェクトを作成'}
       </button>

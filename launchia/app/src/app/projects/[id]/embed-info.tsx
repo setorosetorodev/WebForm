@@ -54,7 +54,7 @@ export function EmbedInfo({ project }: { project: Project }) {
             <button
               type="button"
               onClick={() => copy(ideaUrl, 'idea')}
-              className="text-xs px-3 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
+              className="text-xs px-3 py-1 rounded bg-brand-50 text-brand-700 hover:bg-brand-100"
             >
               {copied === 'idea' ? '✓ コピーしました' : 'コピー'}
             </button>
@@ -72,7 +72,7 @@ export function EmbedInfo({ project }: { project: Project }) {
             <button
               type="button"
               onClick={() => copy(embedSnippet, 'embed')}
-              className="text-xs px-3 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
+              className="text-xs px-3 py-1 rounded bg-brand-50 text-brand-700 hover:bg-brand-100"
             >
               {copied === 'embed' ? '✓ コピーしました' : 'コピー'}
             </button>

@@ -43,7 +43,7 @@ export default async function ProjectDetailPage(props: PageProps<'/projects/[id]
 
       <div className="grid grid-cols-3 gap-3 mb-6">
         <div className="bg-white rounded-xl p-4 border border-gray-200 text-center">
-          <div className="text-2xl font-bold text-blue-600">{counts.confirmed}</div>
+          <div className="text-2xl font-bold text-brand-600">{counts.confirmed}</div>
           <div className="text-xs text-gray-500 mt-0.5">確認済み登録</div>
         </div>
         <div className="bg-white rounded-xl p-4 border border-gray-200 text-center">
@@ -52,10 +52,10 @@ export default async function ProjectDetailPage(props: PageProps<'/projects/[id]
         </div>
         <Link
           href={`/projects/${project.id}/entries`}
-          className="bg-white rounded-xl p-4 border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all flex flex-col items-center justify-center"
+          className="bg-white rounded-xl p-4 border border-gray-200 hover:border-brand-300 hover:shadow-sm transition-all flex flex-col items-center justify-center"
         >
           <div className="text-sm font-semibold text-gray-700">登録者一覧</div>
-          <div className="text-xs text-blue-600 mt-1">→ 開く</div>
+          <div className="text-xs text-brand-600 mt-1">→ 開く</div>
         </Link>
       </div>
 

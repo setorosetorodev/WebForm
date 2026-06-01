@@ -86,7 +86,7 @@ export function EditForm({ project }: { project: Project }) {
           maxLength={80}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
         />
       </div>
 
@@ -97,7 +97,7 @@ export function EditForm({ project }: { project: Project }) {
           onChange={(e) => setDescription(e.target.value)}
           maxLength={2000}
           rows={4}
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
         />
       </div>
 
@@ -110,7 +110,7 @@ export function EditForm({ project }: { project: Project }) {
           value={coverImageUrl}
           onChange={(e) => setCoverImageUrl(e.target.value)}
           placeholder="https://example.com/cover.png"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
         />
       </div>
 
@@ -123,7 +123,7 @@ export function EditForm({ project }: { project: Project }) {
           value={landingPageUrl}
           onChange={(e) => setLandingPageUrl(e.target.value)}
           placeholder="https://dasune.net"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
         />
       </div>
 
@@ -133,7 +133,7 @@ export function EditForm({ project }: { project: Project }) {
             type="checkbox"
             checked={ideaPagePublic}
             onChange={(e) => setIdeaPagePublic(e.target.checked)}
-            className="w-4 h-4 accent-blue-600"
+            className="w-4 h-4 accent-brand-600"
           />
           <span className="text-sm text-gray-700">アイデアページを公開する</span>
         </label>
@@ -142,7 +142,7 @@ export function EditForm({ project }: { project: Project }) {
             type="checkbox"
             checked={embedEnabled}
             onChange={(e) => setEmbedEnabled(e.target.checked)}
-            className="w-4 h-4 accent-blue-600"
+            className="w-4 h-4 accent-brand-600"
           />
           <span className="text-sm text-gray-700">埋め込みウィジェットを有効にする</span>
         </label>
@@ -151,7 +151,7 @@ export function EditForm({ project }: { project: Project }) {
             type="checkbox"
             checked={requireConsent}
             onChange={(e) => setRequireConsent(e.target.checked)}
-            className="w-4 h-4 accent-blue-600"
+            className="w-4 h-4 accent-brand-600"
           />
           <span className="text-sm text-gray-700">プライバシーポリシー同意を必須にする</span>
         </label>
@@ -167,7 +167,7 @@ export function EditForm({ project }: { project: Project }) {
           onChange={(e) => setAllowedOrigins(e.target.value)}
           rows={3}
           placeholder={'https://dasune.net\nhttps://www.dasune.net'}
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 font-mono text-sm"
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 font-mono text-sm"
         />
       </div>
 
@@ -185,7 +185,7 @@ export function EditForm({ project }: { project: Project }) {
       <button
         type="submit"
         disabled={status === 'submitting'}
-        className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg disabled:opacity-50"
+        className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg disabled:opacity-50"
       >
         {status === 'submitting' ? '保存中...' : '変更を保存'}
       </button>

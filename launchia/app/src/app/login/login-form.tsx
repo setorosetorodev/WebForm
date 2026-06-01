@@ -112,7 +112,7 @@ export function LoginForm() {
             type="button"
             onClick={resend}
             disabled={cooldown > 0}
-            className="text-sm text-blue-600 hover:underline disabled:text-gray-400 disabled:no-underline disabled:cursor-not-allowed"
+            className="text-sm text-brand-600 hover:underline disabled:text-gray-400 disabled:no-underline disabled:cursor-not-allowed"
           >
             {cooldown > 0 ? `再送信できます（あと ${cooldown} 秒）` : 'リンクを再送信する'}
           </button>
@@ -124,7 +124,7 @@ export function LoginForm() {
   // ===== 入力画面（A: メール経由であることを予告）=====
   return (
     <form onSubmit={submit} className="space-y-4">
-      <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-xs text-blue-900 leading-relaxed">
+      <div className="bg-brand-50 border border-brand-100 rounded-lg p-3 text-xs text-brand-900 leading-relaxed">
         💡 入力したアドレスに<strong>ログイン用リンク</strong>をメールでお送りします。
         メール内のリンクを開くとログインできます。
         <br />
@@ -145,7 +145,7 @@ export function LoginForm() {
           placeholder="dev@example.com"
           disabled={state === 'submitting'}
           autoComplete="email"
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:opacity-50 invalid:border-red-300"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 disabled:opacity-50 invalid:border-red-300"
         />
       </div>
 
@@ -159,7 +159,7 @@ export function LoginForm() {
           onChange={(e) => setInviteCode(e.target.value)}
           placeholder="LCHA-XXXX-XXXX"
           disabled={state === 'submitting'}
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:opacity-50 font-mono text-sm"
+          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 disabled:opacity-50 font-mono text-sm"
         />
       </div>
 
@@ -170,7 +170,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={state === 'submitting'}
-        className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {state === 'submitting' ? '送信中...' : 'ログインリンクをメールで受け取る'}
       </button>

@@ -104,13 +104,13 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
             href={data.landing_page_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 mb-10"
+            className="inline-flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700 mb-10"
           >
             プロジェクトの LP を見る →
           </a>
         )}
 
-        <div className="mt-12 bg-blue-50 rounded-2xl p-6 md:p-8 border border-blue-100">
+        <div className="mt-12 bg-brand-50 rounded-2xl p-6 md:p-8 border border-brand-100">
           <h2 className="text-lg font-bold text-gray-900 mb-2">リリースを待ちますか？</h2>
           <p className="text-sm text-gray-600 mb-6">
             ウェイトリストに登録すると、リリース時に通知が届きます。
