@@ -82,14 +82,14 @@ export function RegistrationCta({
 
   if (state === 'pending' || state === 'resent') {
     return (
-      <div className="bg-white rounded-xl p-6 text-center">
+      <div className="bg-card rounded-xl p-6 text-center">
         <div className="text-3xl mb-3">📧</div>
-        <div className="text-sm font-semibold text-gray-900 mb-2">
+        <div className="text-sm font-semibold text-fg mb-2">
           {state === 'pending'
             ? '確認メールを送信しました'
             : '確認メールを再送しました'}
         </div>
-        <div className="text-xs text-gray-600 leading-relaxed">
+        <div className="text-xs text-fg-soft leading-relaxed">
           メール内のリンクをクリックして、登録を完了してください。
           <br />
           クリック後、あなたの順位が確定し表示されます。
@@ -100,16 +100,16 @@ export function RegistrationCta({
 
   if (state === 'already') {
     return (
-      <div className="bg-white rounded-xl p-6 text-center">
+      <div className="bg-card rounded-xl p-6 text-center">
         <div className="text-2xl mb-2">✓</div>
-        <div className="text-sm font-semibold text-gray-900 mb-1">
+        <div className="text-sm font-semibold text-fg mb-1">
           すでに {projectName} に登録済みです
         </div>
         <div className="mt-3">
-          <span className="text-4xl font-extrabold text-brand-600">{rank}</span>
-          <span className="text-lg font-semibold text-brand-600 ml-1">番目</span>
+          <span className="text-4xl font-extrabold text-primary">{rank}</span>
+          <span className="text-lg font-semibold text-primary ml-1">番目</span>
         </div>
-        <div className="text-xs text-gray-500 mt-2">
+        <div className="text-xs text-fg-soft mt-2">
           確認メール内の URL から、いつでも順位を確認できます。
         </div>
       </div>
@@ -128,12 +128,12 @@ export function RegistrationCta({
         placeholder="メールアドレス"
         disabled={state === 'submitting'}
         autoComplete="email"
-        className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 disabled:opacity-50 invalid:border-red-300"
+        className="w-full px-4 py-3 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft disabled:opacity-50 invalid:border-danger"
       />
 
       {requireConsent && (
         <>
-          <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none">
+          <label className="flex items-center gap-2 text-sm text-fg-soft cursor-pointer select-none">
             <input
               type="checkbox"
               checked={consent}
@@ -141,14 +141,14 @@ export function RegistrationCta({
                 setConsent(e.target.checked)
                 if (e.target.checked) setConsentError(false)
               }}
-              className="w-4 h-4 accent-brand-600"
+              className="w-4 h-4 accent-primary"
             />
             <span>
               <a
                 href="https://launchia.net/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-brand-600 hover:underline"
+                className="text-primary hover:underline"
               >
                 プライバシーポリシー
               </a>
@@ -156,7 +156,7 @@ export function RegistrationCta({
             </span>
           </label>
           {consentError && (
-            <div className="text-xs text-red-600 pl-6">
+            <div className="text-xs text-danger pl-6">
               プライバシーポリシーへの同意が必要です。
             </div>
           )}
@@ -166,13 +166,13 @@ export function RegistrationCta({
       <button
         type="submit"
         disabled={state === 'submitting'}
-        className="w-full px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-4 py-3 bg-primary hover:bg-primary-hover text-on-primary font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {state === 'submitting' ? '送信中...' : 'ウェイトリストに登録'}
       </button>
 
       {state === 'error' && (
-        <div className="text-sm text-red-600 text-center">{errorMessage}</div>
+        <div className="text-sm text-danger text-center">{errorMessage}</div>
       )}
     </form>
   )

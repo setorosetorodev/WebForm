@@ -1,47 +1,86 @@
 @import "tailwindcss";
 
+/* `.dark` クラス（<html> に付与）でダークを切り替える。
+   既定の dark: バリアントは prefers-color-scheme 連動なので、class 連動に変更する。 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================================
    Launchia デザイントークン — 単一の正 (Single Source of Truth)
    ----------------------------------------------------------------------------
-   ルール・各トークンの役割・命名規約は docs/DESIGN.md を参照。
+   ルール・用途は docs/DESIGN.md を参照。値の出典は Stitch エクスポート
+   （docs/DESIGN-LIGHT.md / docs/DESIGN-DARK.md, Material Design 3 系）。
 
-   ブランド（アクセント）色を変えたいときは、この @theme の --color-brand-*
-   の右辺だけ差し替えれば、全ページ・全コンポーネントに反映される。
-   各ページは brand-* ユーティリティ（bg-brand-600 等）を参照するだけで、
-   個別ファイルに色のリテラルを書かない。
-
-   現状の値は Tailwind 標準の "blue" と同一（oklch 値をそのまま採用）。
-   そのため、トークン化による見た目の変化は無い。
-   Web フォントや配色の刷新は STITCH でのデザイン確定後にここで差し替える。
+   各ページは raw な gray/blue ではなく、ここで定義した「意味トークン」
+   （bg / card / fg / primary 等）を参照する。ライト値は @theme に、
+   ダーク値は下の .dark に置く。配色を変えるときはこの2箇所だけ直す。
    ============================================================================ */
 @theme {
-  /* --- ブランド / アクセント（= 現状 blue 相当） --------------------------- */
-  --color-brand-50: oklch(97% 0.014 254.604);
-  --color-brand-100: oklch(93.2% 0.032 255.585);
-  --color-brand-300: oklch(80.9% 0.105 251.813);
-  --color-brand-500: oklch(62.3% 0.214 259.815);
-  --color-brand-600: oklch(54.6% 0.245 262.881);
-  --color-brand-700: oklch(48.8% 0.243 264.376);
-  --color-brand-900: oklch(37.9% 0.146 265.522);
+  /* --- 面 (surfaces) --- */
+  --color-bg: #f7f9ff;          /* ページ地 */
+  --color-card: #ffffff;        /* カード・ヘッダー */
+  --color-muted: #f1f4fa;       /* 入力欄・コード・入れ子の薄い面 */
 
-  /* --- 本文フォント -------------------------------------------------------
-     現状はシステムフォント（OS 標準 UI フォント）。
-     Web フォント（Geist 等）導入はデザイン確定後に検討。 */
+  /* --- 文字 (on-surface) --- */
+  --color-fg: #181c20;          /* 主役テキスト・見出し */
+  --color-fg-soft: #424753;     /* 補足テキスト・ラベル */
+  --color-fg-faint: #727785;    /* 最も控えめな注記 */
+
+  /* --- 罫線 (outline) --- */
+  --color-line: #c2c6d5;        /* カード枠・区切り線 */
+  --color-line-strong: #727785; /* 入力欄の枠 */
+
+  /* --- ブランド / 主アクション (primary) --- */
+  --color-primary: #0058bd;          /* ボタン地・リンク・強調数値 */
+  --color-on-primary: #ffffff;       /* primary 上の文字 */
+  --color-primary-hover: #004494;    /* primary の hover */
+  --color-primary-soft: #d8e2ff;     /* 淡い brand 背景（CTA枠・ヒント・badge・focus ring） */
+  --color-on-primary-soft: #004494;  /* primary-soft 上の文字 */
+
+  /* --- 状態色 (success / warning / danger) --- */
+  --color-success: #15803d;
+  --color-success-soft: #dcfce7;
+  --color-warning: #b45309;
+  --color-warning-soft: #fef3c7;
+  --color-danger: #ba1a1a;       /* エラー文字・危険ボタン地 */
+  --color-on-danger: #ffffff;    /* 危険ボタン上の文字 */
+  --color-danger-soft: #ffdad6;  /* エラー枠の薄い背景 */
+
+  /* --- 本文フォント（Web フォント Inter 導入は別タスク。docs/DESIGN.md 参照） --- */
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
     Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
 }
 
-/* セマンティックな面の色（body 背景・基本文字色）。
-   ※ アプリ各ページは bg-gray-50 / bg-white 等を直接指定しており、
-   現状ダークモードには未対応（ライト固定）。対応は DESIGN.md 参照。 */
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ダーク値（出典: docs/DESIGN-DARK.md）。:root より優先される（unlayered）。 */
+.dark {
+  --color-bg: #131313;
+  --color-card: #1c1b1b;
+  --color-muted: #201f1f;
+
+  --color-fg: #e5e2e1;
+  --color-fg-soft: #c2c6d2;
+  --color-fg-faint: #8c919c;
+
+  --color-line: #424751;
+  --color-line-strong: #8c919c;
+
+  --color-primary: #a9c7ff;
+  --color-on-primary: #003063;
+  --color-primary-hover: #7baaf7;
+  --color-primary-soft: #00468b;
+  --color-on-primary-soft: #d6e3ff;
+
+  --color-success: #86efac;
+  --color-success-soft: #0d2c18;
+  --color-warning: #fcd34d;
+  --color-warning-soft: #2e2206;
+  --color-danger: #ffb4ab;
+  --color-on-danger: #690005;
+  --color-danger-soft: #5a0a0a;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-bg);
+  color: var(--color-fg);
   font-family: var(--font-sans);
 }

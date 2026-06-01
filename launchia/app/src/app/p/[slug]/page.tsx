@@ -59,18 +59,18 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
   if (!data) notFound()
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <header className="border-b border-gray-100 bg-white/80 backdrop-blur sticky top-0 z-10">
+    <main className="min-h-screen bg-gradient-to-b from-bg to-card">
+      <header className="border-b border-line bg-card/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <a
             href="https://launchia.net"
-            className="text-sm font-bold tracking-tight text-gray-900"
+            className="text-sm font-bold tracking-tight text-fg"
           >
             Launchia
           </a>
           <a
             href="https://launchia.net"
-            className="text-xs text-gray-500 hover:text-gray-900"
+            className="text-xs text-fg-soft hover:text-fg"
           >
             Launchia とは？
           </a>
@@ -79,7 +79,7 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
 
       <article className="max-w-3xl mx-auto px-4 py-12 md:py-16">
         {data.cover_image_url && (
-          <div className="rounded-2xl overflow-hidden bg-gray-100 mb-8 aspect-video">
+          <div className="rounded-2xl overflow-hidden bg-muted mb-8 aspect-video">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={data.cover_image_url}
@@ -89,12 +89,12 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
           </div>
         )}
 
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mb-4">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-fg mb-4">
           {data.name}
         </h1>
 
         {data.description && (
-          <div className="text-gray-700 mb-8 whitespace-pre-wrap leading-relaxed">
+          <div className="text-fg-soft mb-8 whitespace-pre-wrap leading-relaxed">
             {data.description}
           </div>
         )}
@@ -104,15 +104,15 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
             href={data.landing_page_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-brand-600 hover:text-brand-700 mb-10"
+            className="inline-flex items-center gap-1 text-sm text-primary hover:text-primary-hover mb-10"
           >
             プロジェクトの LP を見る →
           </a>
         )}
 
-        <div className="mt-12 bg-brand-50 rounded-2xl p-6 md:p-8 border border-brand-100">
-          <h2 className="text-lg font-bold text-gray-900 mb-2">リリースを待ちますか？</h2>
-          <p className="text-sm text-gray-600 mb-6">
+        <div className="mt-12 bg-primary-soft rounded-2xl p-6 md:p-8 border border-primary-soft">
+          <h2 className="text-lg font-bold text-fg mb-2">リリースを待ちますか？</h2>
+          <p className="text-sm text-fg-soft mb-6">
             ウェイトリストに登録すると、リリース時に通知が届きます。
           </p>
           <RegistrationCta
@@ -123,10 +123,10 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
         </div>
       </article>
 
-      <footer className="border-t border-gray-100 mt-16">
-        <div className="max-w-3xl mx-auto px-4 py-8 flex items-center justify-between text-xs text-gray-400">
+      <footer className="border-t border-line mt-16">
+        <div className="max-w-3xl mx-auto px-4 py-8 flex items-center justify-between text-xs text-fg-faint">
           <div>Powered by Launchia</div>
-          <a href="https://launchia.net/privacy" className="hover:text-gray-600">
+          <a href="https://launchia.net/privacy" className="hover:text-fg-soft">
             プライバシーポリシー
           </a>
         </div>

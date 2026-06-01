@@ -56,8 +56,8 @@ export function NewProjectForm() {
   return (
     <form onSubmit={submit} className="space-y-5">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-          プロジェクト名 <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium text-fg-soft mb-1.5">
+          プロジェクト名 <span className="text-danger">*</span>
         </label>
         <input
           type="text"
@@ -66,14 +66,14 @@ export function NewProjectForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="例: だすね"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-          slug <span className="text-red-500">*</span>
-          <span className="text-xs text-gray-500 font-normal ml-2">
+        <label className="block text-sm font-medium text-fg-soft mb-1.5">
+          slug <span className="text-danger">*</span>
+          <span className="text-xs text-fg-soft font-normal ml-2">
             URL の一部 (例: launchia.net/p/dasune)
           </span>
         </label>
@@ -86,13 +86,13 @@ export function NewProjectForm() {
           value={slug}
           onChange={(e) => setSlug(e.target.value.toLowerCase())}
           placeholder="例: dasune"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 font-mono text-sm"
+          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft font-mono text-sm"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-          説明文 <span className="text-xs text-gray-500 font-normal">(任意)</span>
+        <label className="block text-sm font-medium text-fg-soft mb-1.5">
+          説明文 <span className="text-xs text-fg-soft font-normal">(任意)</span>
         </label>
         <textarea
           value={description}
@@ -100,7 +100,7 @@ export function NewProjectForm() {
           maxLength={2000}
           rows={3}
           placeholder="プロジェクトの説明..."
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
         />
       </div>
 
@@ -110,11 +110,11 @@ export function NewProjectForm() {
             type="checkbox"
             checked={ideaPagePublic}
             onChange={(e) => setIdeaPagePublic(e.target.checked)}
-            className="w-4 h-4 accent-brand-600"
+            className="w-4 h-4 accent-primary"
           />
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-fg-soft">
             アイデアページを公開する{' '}
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-fg-soft">
               (launchia.net/p/{slug || 'slug'})
             </span>
           </span>
@@ -124,14 +124,14 @@ export function NewProjectForm() {
             type="checkbox"
             checked={embedEnabled}
             onChange={(e) => setEmbedEnabled(e.target.checked)}
-            className="w-4 h-4 accent-brand-600"
+            className="w-4 h-4 accent-primary"
           />
-          <span className="text-sm text-gray-700">埋め込みウィジェットを有効にする</span>
+          <span className="text-sm text-fg-soft">埋め込みウィジェットを有効にする</span>
         </label>
       </div>
 
       {errorMessage && (
-        <div className="text-sm text-red-600 bg-red-50 rounded-lg p-3 border border-red-200">
+        <div className="text-sm text-danger bg-danger-soft rounded-lg p-3 border border-danger">
           {errorMessage}
         </div>
       )}
@@ -139,7 +139,7 @@ export function NewProjectForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full px-4 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full px-4 py-3 bg-primary hover:bg-primary-hover text-on-primary font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {pending ? '作成中...' : 'プロジェクトを作成'}
       </button>

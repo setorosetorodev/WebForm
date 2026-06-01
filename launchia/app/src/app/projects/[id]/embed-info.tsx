@@ -37,7 +37,7 @@ export function EmbedInfo({ project }: { project: Project }) {
 
   if (!project.embedEnabled && !project.ideaPagePublic) {
     return (
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+      <div className="bg-warning-soft border border-warning rounded-xl p-4 text-sm text-warning">
         埋め込みもアイデア公開も無効です。下の設定からどちらかを有効にしてください。
       </div>
     )
@@ -46,41 +46,41 @@ export function EmbedInfo({ project }: { project: Project }) {
   return (
     <div className="space-y-4">
       {project.ideaPagePublic && (
-        <div className="bg-white rounded-xl p-5 border border-gray-200">
+        <div className="bg-card rounded-xl p-5 border border-line">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-gray-900 text-sm">
+            <h3 className="font-semibold text-fg text-sm">
               アイデアページ URL
             </h3>
             <button
               type="button"
               onClick={() => copy(ideaUrl, 'idea')}
-              className="text-xs px-3 py-1 rounded bg-brand-50 text-brand-700 hover:bg-brand-100"
+              className="text-xs px-3 py-1 rounded bg-primary-soft text-on-primary-soft hover:opacity-80"
             >
               {copied === 'idea' ? '✓ コピーしました' : 'コピー'}
             </button>
           </div>
-          <code className="block bg-gray-50 rounded p-3 text-xs font-mono text-gray-700 break-all">
+          <code className="block bg-muted rounded p-3 text-xs font-mono text-fg-soft break-all">
             {ideaUrl}
           </code>
         </div>
       )}
 
       {project.embedEnabled && (
-        <div className="bg-white rounded-xl p-5 border border-gray-200">
+        <div className="bg-card rounded-xl p-5 border border-line">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-gray-900 text-sm">LP 埋め込みコード</h3>
+            <h3 className="font-semibold text-fg text-sm">LP 埋め込みコード</h3>
             <button
               type="button"
               onClick={() => copy(embedSnippet, 'embed')}
-              className="text-xs px-3 py-1 rounded bg-brand-50 text-brand-700 hover:bg-brand-100"
+              className="text-xs px-3 py-1 rounded bg-primary-soft text-on-primary-soft hover:opacity-80"
             >
               {copied === 'embed' ? '✓ コピーしました' : 'コピー'}
             </button>
           </div>
-          <pre className="bg-gray-50 rounded p-3 text-xs font-mono text-gray-700 overflow-x-auto whitespace-pre">
+          <pre className="bg-muted rounded p-3 text-xs font-mono text-fg-soft overflow-x-auto whitespace-pre">
             {embedSnippet}
           </pre>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-fg-soft mt-2">
             自社 LP の HTML に貼り付けてください。
           </p>
         </div>

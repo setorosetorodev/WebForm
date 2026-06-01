@@ -19,7 +19,7 @@ export function LogoutButton() {
       type="button"
       onClick={logout}
       disabled={pending}
-      className="px-3 py-1.5 text-gray-500 hover:text-gray-900 disabled:opacity-50"
+      className="px-3 py-1.5 text-fg-soft hover:text-fg disabled:opacity-50"
     >
       ログアウト
     </button>

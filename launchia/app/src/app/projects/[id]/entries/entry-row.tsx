@@ -38,28 +38,28 @@ export function EntryRow({
   })
 
   return (
-    <tr className="border-t border-gray-100 hover:bg-gray-50">
-      <td className="px-4 py-3 text-gray-500">{entry.rankInList}</td>
-      <td className="px-4 py-3 font-mono text-gray-900">{entry.email}</td>
-      <td className="px-4 py-3 text-xs text-gray-500">{entry.source}</td>
+    <tr className="border-t border-line hover:bg-muted">
+      <td className="px-4 py-3 text-fg-soft">{entry.rankInList}</td>
+      <td className="px-4 py-3 font-mono text-fg">{entry.email}</td>
+      <td className="px-4 py-3 text-xs text-fg-soft">{entry.source}</td>
       <td className="px-4 py-3">
         {entry.confirmedAt ? (
-          <span className="text-xs px-2 py-0.5 bg-green-50 text-green-700 rounded">
+          <span className="text-xs px-2 py-0.5 bg-success-soft text-success rounded">
             確認済み
           </span>
         ) : (
-          <span className="text-xs px-2 py-0.5 bg-amber-50 text-amber-700 rounded">
+          <span className="text-xs px-2 py-0.5 bg-warning-soft text-warning rounded">
             確認待ち
           </span>
         )}
       </td>
-      <td className="px-4 py-3 text-xs text-gray-500">{dt}</td>
+      <td className="px-4 py-3 text-xs text-fg-soft">{dt}</td>
       <td className="px-4 py-3 text-right">
         <button
           type="button"
           onClick={remove}
           disabled={pending}
-          className="text-xs text-red-600 hover:text-red-700 disabled:opacity-50"
+          className="text-xs text-danger hover:text-danger disabled:opacity-50"
         >
           削除
         </button>

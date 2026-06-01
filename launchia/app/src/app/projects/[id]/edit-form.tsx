@@ -79,51 +79,51 @@ export function EditForm({ project }: { project: Project }) {
   return (
     <form onSubmit={submit} className="space-y-5">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">プロジェクト名</label>
+        <label className="block text-sm font-medium text-fg-soft mb-1.5">プロジェクト名</label>
         <input
           type="text"
           required
           maxLength={80}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">説明文</label>
+        <label className="block text-sm font-medium text-fg-soft mb-1.5">説明文</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           maxLength={2000}
           rows={4}
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-          カバー画像 URL <span className="text-xs text-gray-500 font-normal">(任意)</span>
+        <label className="block text-sm font-medium text-fg-soft mb-1.5">
+          カバー画像 URL <span className="text-xs text-fg-soft font-normal">(任意)</span>
         </label>
         <input
           type="url"
           value={coverImageUrl}
           onChange={(e) => setCoverImageUrl(e.target.value)}
           placeholder="https://example.com/cover.png"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">
-          LP URL <span className="text-xs text-gray-500 font-normal">(自社 LP がある場合)</span>
+        <label className="block text-sm font-medium text-fg-soft mb-1.5">
+          LP URL <span className="text-xs text-fg-soft font-normal">(自社 LP がある場合)</span>
         </label>
         <input
           type="url"
           value={landingPageUrl}
           onChange={(e) => setLandingPageUrl(e.target.value)}
           placeholder="https://dasune.net"
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
         />
       </div>
 
@@ -133,51 +133,51 @@ export function EditForm({ project }: { project: Project }) {
             type="checkbox"
             checked={ideaPagePublic}
             onChange={(e) => setIdeaPagePublic(e.target.checked)}
-            className="w-4 h-4 accent-brand-600"
+            className="w-4 h-4 accent-primary"
           />
-          <span className="text-sm text-gray-700">アイデアページを公開する</span>
+          <span className="text-sm text-fg-soft">アイデアページを公開する</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
             checked={embedEnabled}
             onChange={(e) => setEmbedEnabled(e.target.checked)}
-            className="w-4 h-4 accent-brand-600"
+            className="w-4 h-4 accent-primary"
           />
-          <span className="text-sm text-gray-700">埋め込みウィジェットを有効にする</span>
+          <span className="text-sm text-fg-soft">埋め込みウィジェットを有効にする</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
             checked={requireConsent}
             onChange={(e) => setRequireConsent(e.target.checked)}
-            className="w-4 h-4 accent-brand-600"
+            className="w-4 h-4 accent-primary"
           />
-          <span className="text-sm text-gray-700">プライバシーポリシー同意を必須にする</span>
+          <span className="text-sm text-fg-soft">プライバシーポリシー同意を必須にする</span>
         </label>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+        <label className="block text-sm font-medium text-fg-soft mb-1.5">
           埋め込み許可ドメイン{' '}
-          <span className="text-xs text-gray-500 font-normal">(1 行 1 URL、空なら全許可)</span>
+          <span className="text-xs text-fg-soft font-normal">(1 行 1 URL、空なら全許可)</span>
         </label>
         <textarea
           value={allowedOrigins}
           onChange={(e) => setAllowedOrigins(e.target.value)}
           rows={3}
           placeholder={'https://dasune.net\nhttps://www.dasune.net'}
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100 font-mono text-sm"
+          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft font-mono text-sm"
         />
       </div>
 
       {errorMessage && (
-        <div className="text-sm text-red-600 bg-red-50 rounded-lg p-3 border border-red-200">
+        <div className="text-sm text-danger bg-danger-soft rounded-lg p-3 border border-danger">
           {errorMessage}
         </div>
       )}
       {status === 'saved' && (
-        <div className="text-sm text-green-700 bg-green-50 rounded-lg p-3 border border-green-200">
+        <div className="text-sm text-success bg-success-soft rounded-lg p-3 border border-success">
           ✓ 保存しました
         </div>
       )}
@@ -185,7 +185,7 @@ export function EditForm({ project }: { project: Project }) {
       <button
         type="submit"
         disabled={status === 'submitting'}
-        className="px-6 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold rounded-lg disabled:opacity-50"
+        className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-on-primary text-sm font-semibold rounded-lg disabled:opacity-50"
       >
         {status === 'submitting' ? '保存中...' : '変更を保存'}
       </button>

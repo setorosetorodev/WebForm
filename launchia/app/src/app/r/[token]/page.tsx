@@ -34,31 +34,31 @@ export default async function RankCheckPage(props: PageProps<'/r/[token]'>) {
   if (!data) notFound()
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-lg max-w-md w-full p-8">
+    <main className="min-h-screen bg-bg flex items-center justify-center p-4">
+      <div className="bg-card rounded-2xl shadow-lg max-w-md w-full p-8">
         {data.just_confirmed && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 text-center">
+          <div className="bg-success-soft border border-success rounded-lg p-4 mb-6 text-center">
             <div className="text-2xl mb-1">🎉</div>
-            <div className="text-sm font-bold text-green-800">登録が完了しました！</div>
-            <div className="text-xs text-green-700 mt-1">
+            <div className="text-sm font-bold text-success">登録が完了しました！</div>
+            <div className="text-xs text-success mt-1">
               ウェイトリストへの参加が確定しました。
             </div>
           </div>
         )}
 
-        <div className="text-sm font-semibold text-gray-700">{data.project_name}</div>
-        <div className="text-xs text-gray-400 mt-1 mb-6">ウェイトリストの順位確認</div>
+        <div className="text-sm font-semibold text-fg-soft">{data.project_name}</div>
+        <div className="text-xs text-fg-faint mt-1 mb-6">ウェイトリストの順位確認</div>
 
-        <div className="bg-brand-50 rounded-xl py-8 px-4 text-center mb-6">
-          <div className="text-xs text-gray-600 mb-2">現在の順位</div>
+        <div className="bg-primary-soft rounded-xl py-8 px-4 text-center mb-6">
+          <div className="text-xs text-fg-soft mb-2">現在の順位</div>
           <div>
-            <span className="text-6xl font-extrabold text-brand-600">{data.rank}</span>
-            <span className="text-2xl font-semibold text-brand-600 ml-1">番目</span>
+            <span className="text-6xl font-extrabold text-primary">{data.rank}</span>
+            <span className="text-2xl font-semibold text-primary ml-1">番目</span>
           </div>
-          <div className="text-xs text-gray-500 mt-3">総登録者 {data.total_count} 人中</div>
+          <div className="text-xs text-fg-soft mt-3">総登録者 {data.total_count} 人中</div>
         </div>
 
-        <p className="text-sm text-gray-600 text-center mb-8 leading-relaxed">
+        <p className="text-sm text-fg-soft text-center mb-8 leading-relaxed">
           リリースまでもう少しお待ちください。
           <br />
           このページは何度でも確認できます。
@@ -66,9 +66,9 @@ export default async function RankCheckPage(props: PageProps<'/r/[token]'>) {
 
         <UnsubscribeButton token={token} />
 
-        <div className="text-xs text-gray-400 text-center mt-8">
+        <div className="text-xs text-fg-faint text-center mt-8">
           このページは{' '}
-          <a href="https://launchia.net" className="text-gray-500 hover:underline">
+          <a href="https://launchia.net" className="text-fg-soft hover:underline">
             Launchia
           </a>{' '}
           が提供しています
