@@ -46,6 +46,8 @@ export type CreateProjectInput = {
   idea_page_public?: boolean
   require_consent?: boolean
   allowed_origins?: string[]
+  launch_target_date?: string | null
+  goal_count?: number | null
 }
 
 export async function createProjectForOwner(
@@ -64,6 +66,8 @@ export async function createProjectForOwner(
     ideaPagePublic: input.idea_page_public ?? false,
     requireConsent: input.require_consent ?? false,
     allowedOrigins: input.allowed_origins ?? [],
+    launchTargetDate: input.launch_target_date ?? null,
+    goalCount: input.goal_count ?? null,
   }
   const [project] = await db.insert(projects).values(values).returning()
   return project
@@ -78,6 +82,8 @@ export type UpdateProjectInput = Partial<{
   idea_page_public: boolean
   require_consent: boolean
   allowed_origins: string[]
+  launch_target_date: string | null
+  goal_count: number | null
 }>
 
 export async function updateProject(
@@ -94,6 +100,8 @@ export async function updateProject(
   if (input.idea_page_public !== undefined) updates.ideaPagePublic = input.idea_page_public
   if (input.require_consent !== undefined) updates.requireConsent = input.require_consent
   if (input.allowed_origins !== undefined) updates.allowedOrigins = input.allowed_origins
+  if (input.launch_target_date !== undefined) updates.launchTargetDate = input.launch_target_date
+  if (input.goal_count !== undefined) updates.goalCount = input.goal_count
 
   const [project] = await db.update(projects).set(updates).where(eq(projects.id, id)).returning()
   return project

@@ -14,16 +14,24 @@ import {
   listEntriesForProject,
   softDeleteEntry,
 } from '../repositories/waitlist'
+import { getOverviewForOwner, getProjectStatsForOwner } from '../repositories/stats'
 
 const adminRoutes = new Hono<{ Bindings: Env }>()
 
 adminRoutes.use('*', requireAuth())
 
+const emptyStats = { total: 0, confirmed: 0, pending: 0, todayNew: 0, daily: [0, 0, 0, 0, 0, 0, 0] }
+
 adminRoutes.get('/projects', async (c) => {
   const user = c.get('user')
   const db = createDbClient(c.env.DATABASE_URL)
-  const projects = await findProjectsForOwner(db, user.id)
-  return c.json({ projects })
+  const [projects, overview, statsMap] = await Promise.all([
+    findProjectsForOwner(db, user.id),
+    getOverviewForOwner(db, user.id),
+    getProjectStatsForOwner(db, user.id),
+  ])
+  const withStats = projects.map((p) => ({ ...p, stats: statsMap[p.id] ?? emptyStats }))
+  return c.json({ projects: withStats, overview })
 })
 
 const slugRegex = /^[a-z0-9-]+$/
@@ -32,6 +40,16 @@ const nullableUrl = z
   .nullable()
   .optional()
   .transform((v) => (v === '' || v == null ? null : v))
+
+const nullableDate = z
+  .union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.literal('')])
+  .nullable()
+  .optional()
+  .transform((v) => (v === '' || v == null ? null : v))
+
+const nullableGoal = z
+  .union([z.number().int().min(1).max(100_000_000), z.null()])
+  .optional()
 
 const createProjectSchema = z.object({
   slug: z.string().min(2).max(40).regex(slugRegex),
@@ -43,6 +61,8 @@ const createProjectSchema = z.object({
   idea_page_public: z.boolean().optional(),
   require_consent: z.boolean().optional(),
   allowed_origins: z.array(z.string()).optional(),
+  launch_target_date: nullableDate,
+  goal_count: nullableGoal,
 })
 
 adminRoutes.post('/projects', async (c) => {
@@ -98,6 +118,8 @@ const updateProjectSchema = z.object({
   idea_page_public: z.boolean().optional(),
   require_consent: z.boolean().optional(),
   allowed_origins: z.array(z.string()).optional(),
+  launch_target_date: nullableDate,
+  goal_count: nullableGoal,
 })
 
 adminRoutes.patch('/projects/:id', async (c) => {

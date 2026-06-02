@@ -2,6 +2,7 @@ import { sql } from 'drizzle-orm'
 import {
   boolean,
   customType,
+  date,
   index,
   integer,
   pgTable,
@@ -70,6 +71,10 @@ export const projects = pgTable('launchia_projects', {
     .array()
     .notNull()
     .default(sql`'{}'::text[]`),
+  // リリース予定日（任意）。カウントダウン表示用。日付のみ（YYYY-MM-DD）。
+  launchTargetDate: date('launch_target_date'),
+  // 目標登録数（任意）。例: 1000。進捗バー/マイルストーン(25/50/100/200%)表示用。
+  goalCount: integer('goal_count'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
