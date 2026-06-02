@@ -14,6 +14,8 @@ type Project = {
   ideaPagePublic: boolean
   requireConsent: boolean
   allowedOrigins: string[]
+  launchTargetDate: string | null
+  goalCount: number | null
 }
 
 type Status = 'idle' | 'submitting' | 'saved' | 'error'
@@ -27,6 +29,10 @@ export function EditForm({ project }: { project: Project }) {
   const [embedEnabled, setEmbedEnabled] = useState(project.embedEnabled)
   const [ideaPagePublic, setIdeaPagePublic] = useState(project.ideaPagePublic)
   const [requireConsent, setRequireConsent] = useState(project.requireConsent)
+  const [launchTargetDate, setLaunchTargetDate] = useState(project.launchTargetDate ?? '')
+  const [goalCount, setGoalCount] = useState(
+    project.goalCount != null ? String(project.goalCount) : '',
+  )
   const [allowedOrigins, setAllowedOrigins] = useState(
     (project.allowedOrigins ?? []).join('\n'),
   )
@@ -56,6 +62,8 @@ export function EditForm({ project }: { project: Project }) {
           idea_page_public: ideaPagePublic,
           require_consent: requireConsent,
           allowed_origins: origins,
+          launch_target_date: launchTargetDate || null,
+          goal_count: goalCount ? Number(goalCount) : null,
         }),
       })
 
@@ -125,6 +133,33 @@ export function EditForm({ project }: { project: Project }) {
           placeholder="https://dasune.net"
           className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
         />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-fg-soft mb-1.5">
+            リリース予定日 <span className="text-xs text-fg-soft font-normal">(任意)</span>
+          </label>
+          <input
+            type="date"
+            value={launchTargetDate}
+            onChange={(e) => setLaunchTargetDate(e.target.value)}
+            className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-fg-soft mb-1.5">
+            目標登録数 <span className="text-xs text-fg-soft font-normal">(任意)</span>
+          </label>
+          <input
+            type="number"
+            min={1}
+            value={goalCount}
+            onChange={(e) => setGoalCount(e.target.value)}
+            placeholder="例: 1000"
+            className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          />
+        </div>
       </div>
 
       <div className="space-y-2">

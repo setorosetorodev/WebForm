@@ -10,6 +10,8 @@ export function NewProjectForm() {
   const [description, setDescription] = useState('')
   const [ideaPagePublic, setIdeaPagePublic] = useState(false)
   const [embedEnabled, setEmbedEnabled] = useState(true)
+  const [launchTargetDate, setLaunchTargetDate] = useState('')
+  const [goalCount, setGoalCount] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [pending, setPending] = useState(false)
 
@@ -28,6 +30,8 @@ export function NewProjectForm() {
           description: description || null,
           idea_page_public: ideaPagePublic,
           embed_enabled: embedEnabled,
+          launch_target_date: launchTargetDate || null,
+          goal_count: goalCount ? Number(goalCount) : null,
         }),
       })
       const data = (await res.json().catch(() => ({}))) as {
@@ -102,6 +106,35 @@ export function NewProjectForm() {
           placeholder="プロジェクトの説明..."
           className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
         />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-fg-soft mb-1.5">
+            リリース予定日 <span className="text-xs text-fg-soft font-normal">(任意)</span>
+          </label>
+          <input
+            type="date"
+            value={launchTargetDate}
+            onChange={(e) => setLaunchTargetDate(e.target.value)}
+            className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          />
+          <p className="text-xs text-fg-faint mt-1">カウントダウンに使います。</p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-fg-soft mb-1.5">
+            目標登録数 <span className="text-xs text-fg-soft font-normal">(任意)</span>
+          </label>
+          <input
+            type="number"
+            min={1}
+            value={goalCount}
+            onChange={(e) => setGoalCount(e.target.value)}
+            placeholder="例: 1000"
+            className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          />
+          <p className="text-xs text-fg-faint mt-1">進捗バー・達成度に使います。</p>
+        </div>
       </div>
 
       <div className="space-y-2 pt-2">

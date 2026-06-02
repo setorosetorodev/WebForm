@@ -16,6 +16,8 @@ type ProjectData = {
     ideaPagePublic: boolean
     requireConsent: boolean
     allowedOrigins: string[]
+    launchTargetDate: string | null
+    goalCount: number | null
     createdAt: string
   }
   counts: { total: number; confirmed: number; pending: number }

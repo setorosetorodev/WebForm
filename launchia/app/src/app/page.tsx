@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { BRAND_WORDMARK_CSS } from './brand'
 
 /**
  * Launchia トップ `/`（launchia.net）— 開発者向け LP。
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     '公開前から、あなたのプロダクトのファンクラブを。自社サイトに数行貼るだけでメール登録と順位表示が動き出す、リリース前アプリのためのウェイトリスト・サービス。',
 }
 
-const css = `
+const css = BRAND_WORDMARK_CSS + `
 .slp {
   /* ライト */
   --slp-bg: #fbf8fe;
@@ -126,7 +127,9 @@ export default function HomePage() {
       {/* Header */}
       <header className="w-full top-0 sticky z-50 bg-[var(--slp-bg)] border-b-4 border-[color:var(--slp-ink)] shadow-[0_4px_0_0_var(--slp-ink)]">
         <nav className="flex justify-between items-center px-4 md:px-16 py-4 max-w-[1200px] mx-auto">
-          <div className="slp-headline font-extrabold text-[color:var(--slp-primary)] tracking-tighter">Launchia</div>
+          <div className="brand-wordmark text-[color:var(--slp-primary)]">
+            Launchia<span className="text-[color:var(--slp-orange)]">.</span>
+          </div>
           <Link
             href="/login"
             className="neo-btn bg-[var(--slp-primary)] text-[color:var(--slp-on-primary)] slp-btn px-6 py-3 neo-border rounded-xl shadow-[4px_4px_0px_0px_var(--slp-ink)] hover:shadow-[6px_6px_0px_0px_var(--slp-ink)]"
@@ -170,17 +173,40 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Product preview placeholder（TODO: 実スクショ/UIモックに差し替え） */}
-        <section className="relative w-full aspect-[16/7] neo-border rounded-2xl shadow-[12px_12px_0px_0px_var(--slp-primary-strong)] overflow-hidden bg-[var(--slp-surface-high)]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            alt="Launchia ダッシュボードのイメージ"
-            className="w-full h-full object-cover grayscale opacity-50 contrast-125"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEW7qW9lqtgUxO9_mi8Smz9pbQ79yYReYaeaJMAWqXo0kaIKwS4X1w1JG5Zh2iez22gUar-aPXFHvKYs75o8tlukgRAKL1YjvciHEN_-NzenLl1PfmxfQXr6kVcYnCTvShhwxCmlp0GRKRNobYGEzdSq8JZPMpsJqniHVfbBNAX5rTj22aHKq5FQUQjmGbPzDGcFItRcgtNx_R5PMDADHbTMMPyjf0XsopRXo1Nw-J7FDla7GQqWrE1T1AHOtyf-i9TyGhgc3yFl8"
-          />
-          <div className="absolute inset-0 flex items-center justify-center bg-[var(--slp-overlay)] backdrop-blur-[2px]">
-            <div className="bg-[var(--slp-card)] neo-border p-6 rounded-xl shadow-[8px_8px_0px_0px_var(--slp-ink)]">
-              <span className="slp-code text-[color:var(--slp-primary)] font-bold">PREVIEW_V0.4.2</span>
+        {/* 製品プレビュー: 実ダッシュボード(Mission Control)のスクショを「アプリ窓」風フレーム＋キャプションで提示。テーマ連動。 */}
+        <section className="space-y-4">
+          <p className="text-center slp-body text-[color:var(--slp-fg-soft)]">
+            これがあなたの管理画面 —{' '}
+            <span className="font-semibold text-[color:var(--slp-fg)]">
+              登録の熱量も、目標までの距離も、ひと目で。
+            </span>
+          </p>
+          <div className="neo-border rounded-2xl overflow-hidden shadow-[12px_12px_0px_0px_var(--slp-primary-strong)] bg-[var(--slp-card)]">
+            {/* 窓のタイトルバー */}
+            <div className="flex items-center gap-3 px-4 py-2.5 border-b-2 border-[color:var(--slp-ink)] bg-[var(--slp-surface)]">
+              <span className="flex gap-1.5" aria-hidden="true">
+                <span className="w-3 h-3 rounded-full bg-[var(--slp-orange)]"></span>
+                <span className="w-3 h-3 rounded-full bg-[var(--slp-green)]"></span>
+                <span className="w-3 h-3 rounded-full bg-[var(--slp-primary)]"></span>
+              </span>
+              <span className="mx-auto slp-code text-xs text-[color:var(--slp-fg-faint)]">
+                🔒 launchia.net/projects
+              </span>
+            </div>
+            {/* スクショ（上部基準でクロップ） */}
+            <div className="relative w-full aspect-[16/7] overflow-hidden bg-[var(--slp-surface-high)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                alt="Launchia の管理ダッシュボード（Mission Control）"
+                className="w-full h-full object-cover object-top block dark:hidden"
+                src="/dashboard-light.png"
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                alt="Launchia の管理ダッシュボード（Mission Control・ダークモード）"
+                className="w-full h-full object-cover object-top hidden dark:block"
+                src="/dashboard-dark.png"
+              />
             </div>
           </div>
         </section>
@@ -344,7 +370,9 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="w-full bg-[var(--slp-surface)] border-t-4 border-[color:var(--slp-ink)]">
         <div className="flex flex-col md:flex-row justify-between items-center gap-2 px-4 md:px-16 py-6 max-w-[1200px] mx-auto">
-          <div className="slp-headline font-black text-[color:var(--slp-fg)] tracking-tighter">Launchia</div>
+          <div className="brand-wordmark-strong text-[color:var(--slp-fg)]">
+            Launchia<span className="text-[color:var(--slp-orange)]">.</span>
+          </div>
           <Link
             href="/privacy"
             className="slp-body text-[color:var(--slp-fg-soft)] hover:text-[color:var(--slp-primary)] hover:underline decoration-[color:var(--slp-primary)] decoration-2 transition-all"
