@@ -45,6 +45,38 @@
   --color-on-danger: #ffffff;    /* 危険ボタン上の文字 */
   --color-danger-soft: #ffdad6;  /* エラー枠の薄い背景 */
 
+  /* ============================================================
+     開発者向け neo トークン（Vibrant Dev-Pulse / ネオブルータリズム）= 単一ソース
+     対象: /(LP)・/login・/projects/*（管理）・/apply（招待申請）。
+     エンドユーザー系（/p・/r・widget）は上の M3 トークンを使う（別系統・混ぜない）。
+     値は LP(.slp)/ダッシュ(.dash) と一致。authored クラスは src/app/brand.ts(NEO_CSS)。
+     ============================================================ */
+  --color-neo-bg: #fbf8fe;
+  --color-neo-surface: #f6f2f8;
+  --color-neo-surface-high: #eae7ed;
+  --color-neo-card: #ffffff;
+  --color-neo-fg: #1b1b1f;
+  --color-neo-fg-soft: #464555;
+  --color-neo-fg-faint: #767587;
+  --color-neo-ink: #1b1b1f;            /* ネオの極太枠・ハード影 */
+  --color-neo-track: #e4e1e7;          /* 進捗バー等の溝 */
+  --color-neo-primary: #3f40e7;
+  --color-neo-on-primary: #ffffff;
+  --color-neo-primary-strong: #5b5eff;
+  --color-neo-primary-soft: #e1e0ff;
+  --color-neo-on-primary-soft: #06006c;
+  --color-neo-orange: #fb7800;
+  --color-neo-on-orange: #592600;
+  --color-neo-orange-soft: #ffdbc8;
+  --color-neo-on-orange-soft: #321200;
+  --color-neo-green: #00845a;
+  --color-neo-on-green: #eefff2;
+  --color-neo-green-soft: #74fbbe;
+  --color-neo-on-green-soft: #002113;
+  --color-neo-danger: #ba1a1a;
+  --color-neo-on-danger: #ffffff;
+  --color-neo-danger-soft: #ffdad6;
+
   /* --- 本文フォント（Web フォント Inter 導入は別タスク。docs/DESIGN.md 参照） --- */
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
@@ -77,6 +109,33 @@
   --color-danger: #ffb4ab;
   --color-on-danger: #690005;
   --color-danger-soft: #5a0a0a;
+
+  /* 開発者 neo（ダーク・方針B：青ブランド維持。インクは濃グレーで枠/影を可視化しつつ白すぎ回避） */
+  --color-neo-bg: #131316;
+  --color-neo-surface: #1f1f29;
+  --color-neo-surface-high: #2a2a35;
+  --color-neo-card: #1a1a22;
+  --color-neo-fg: #ece9f0;
+  --color-neo-fg-soft: #bdb9cc;
+  --color-neo-fg-faint: #908ca0;
+  --color-neo-ink: #3a3a48;
+  --color-neo-track: #2a2a35;
+  --color-neo-primary: #9aa0ff;
+  --color-neo-on-primary: #0c0c1a;
+  --color-neo-primary-strong: #6f6dff;
+  --color-neo-primary-soft: #2f2f63;
+  --color-neo-on-primary-soft: #d9d8ff;
+  --color-neo-orange: #ff9a3d;
+  --color-neo-on-orange: #3a1c00;
+  --color-neo-orange-soft: #5a3a1f;
+  --color-neo-on-orange-soft: #ffd9b8;
+  --color-neo-green: #34d99e;
+  --color-neo-on-green: #06231a;
+  --color-neo-green-soft: #114a36;
+  --color-neo-on-green-soft: #8df3c5;
+  --color-neo-danger: #ffb4ab;
+  --color-neo-on-danger: #690005;
+  --color-neo-danger-soft: #5a0a0a;
 }
 
 body {

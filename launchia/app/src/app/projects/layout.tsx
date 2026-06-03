@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { apiJson } from '@/lib/api'
 import { AdminChrome } from './admin-chrome'
 import { LogoutButton } from './logout-button'
+import { NeoStyle } from '../neo-style'
 
 export const metadata: Metadata = {
   title: {
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   },
 }
 
-type Me = { user: { id: string; email: string } }
+type Me = { user: { id: string; email: string }; isAdmin?: boolean }
 
 export default async function ProjectsLayout({
   children,
@@ -23,6 +24,7 @@ export default async function ProjectsLayout({
 
   return (
     <AdminChrome email={me.user.email} actions={<LogoutButton />}>
+      <NeoStyle />
       {children}
     </AdminChrome>
   )

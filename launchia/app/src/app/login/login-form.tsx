@@ -92,27 +92,27 @@ export function LoginForm() {
     return (
       <div className="text-center py-4">
         <div className="text-4xl mb-3">📧</div>
-        <div className="text-base font-semibold text-fg mb-2">
+        <div className="neo-headline text-base text-neo-fg mb-2">
           メールを確認してください
         </div>
-        <div className="text-sm text-fg-soft leading-relaxed mb-1">
-          <span className="font-medium text-fg break-all">{sentTo}</span>
+        <div className="neo-body text-sm text-neo-fg-soft leading-relaxed mb-1">
+          <span className="neo-code text-neo-fg break-all">{sentTo}</span>
           <br />
           宛にログイン用リンクを送信しました。
         </div>
-        <div className="text-sm text-fg-soft leading-relaxed">
+        <div className="neo-body text-sm text-neo-fg-soft leading-relaxed">
           メール内のリンクを開くとログインが完了します。
           <br />
           リンクは <strong>15 分間</strong> 有効です。
         </div>
 
-        <div className="mt-6 pt-5 border-t border-line">
-          <div className="text-xs text-fg-soft mb-2">メールが届きませんか？</div>
+        <div className="mt-6 pt-5 border-t-2 border-neo-track">
+          <div className="neo-body text-xs text-neo-fg-soft mb-2">メールが届きませんか？</div>
           <button
             type="button"
             onClick={resend}
             disabled={cooldown > 0}
-            className="text-sm text-primary hover:underline disabled:text-fg-faint disabled:no-underline disabled:cursor-not-allowed"
+            className="neo-code text-sm text-neo-primary hover:underline disabled:text-neo-fg-faint disabled:no-underline disabled:cursor-not-allowed"
           >
             {cooldown > 0 ? `再送信できます（あと ${cooldown} 秒）` : 'リンクを再送信する'}
           </button>
@@ -124,7 +124,7 @@ export function LoginForm() {
   // ===== 入力画面（A: メール経由であることを予告）=====
   return (
     <form onSubmit={submit} className="space-y-4">
-      <div className="bg-primary-soft border border-primary-soft rounded-lg p-3 text-xs text-on-primary-soft leading-relaxed">
+      <div className="bg-neo-primary-soft neo-border-thin rounded-xl p-3 neo-body text-xs text-neo-on-primary-soft leading-relaxed">
         💡 入力したアドレスに<strong>ログイン用リンク</strong>をメールでお送りします。
         メール内のリンクを開くとログインできます。
         <br />
@@ -132,7 +132,7 @@ export function LoginForm() {
       </div>
 
       <div>
-        <label className="text-xs font-medium text-fg-soft mb-1.5 block">
+        <label className="neo-label text-xs text-neo-fg-soft mb-1.5 block">
           メールアドレス
         </label>
         <input
@@ -145,13 +145,13 @@ export function LoginForm() {
           placeholder="dev@example.com"
           disabled={state === 'submitting'}
           autoComplete="email"
-          className="w-full px-4 py-3 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft disabled:opacity-50 invalid:border-danger"
+          className="neo-input"
         />
       </div>
 
       <div>
-        <label className="text-xs font-medium text-fg-soft mb-1.5 block">
-          招待コード <span className="text-fg-faint font-normal">(新規ご利用のみ)</span>
+        <label className="neo-label text-xs text-neo-fg-soft mb-1.5 block">
+          招待コード <span className="text-neo-fg-faint font-normal">(新規ご利用のみ)</span>
         </label>
         <input
           type="text"
@@ -159,18 +159,18 @@ export function LoginForm() {
           onChange={(e) => setInviteCode(e.target.value)}
           placeholder="LCHA-XXXX-XXXX"
           disabled={state === 'submitting'}
-          className="w-full px-4 py-3 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft disabled:opacity-50 font-mono text-sm"
+          className="neo-input neo-code text-sm"
         />
       </div>
 
       {state === 'error' && (
-        <div className="text-sm text-danger text-center">{errorMessage}</div>
+        <div className="neo-body text-sm text-neo-danger text-center">{errorMessage}</div>
       )}
 
       <button
         type="submit"
         disabled={state === 'submitting'}
-        className="w-full px-4 py-3 bg-primary hover:bg-primary-hover text-on-primary font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="neo-btn w-full bg-neo-primary text-neo-on-primary rounded-xl py-3"
       >
         {state === 'submitting' ? '送信中...' : 'ログインリンクをメールで受け取る'}
       </button>

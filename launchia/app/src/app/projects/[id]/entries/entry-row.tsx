@@ -38,28 +38,28 @@ export function EntryRow({
   })
 
   return (
-    <tr className="border-t border-line hover:bg-muted">
-      <td className="px-4 py-3 text-fg-soft">{entry.rankInList}</td>
-      <td className="px-4 py-3 font-mono text-fg">{entry.email}</td>
-      <td className="px-4 py-3 text-xs text-fg-soft">{entry.source}</td>
+    <tr className="border-t-2 border-neo-track hover:bg-neo-surface">
+      <td className="px-4 py-3 neo-code text-neo-fg-soft">{entry.rankInList}</td>
+      <td className="px-4 py-3 neo-code text-neo-fg">{entry.email}</td>
+      <td className="px-4 py-3 neo-body text-xs text-neo-fg-soft">{entry.source}</td>
       <td className="px-4 py-3">
         {entry.confirmedAt ? (
-          <span className="text-xs px-2 py-0.5 bg-success-soft text-success rounded">
+          <span className="neo-code text-xs px-2 py-0.5 bg-neo-green-soft text-neo-on-green-soft border-2 border-neo-green rounded-md">
             確認済み
           </span>
         ) : (
-          <span className="text-xs px-2 py-0.5 bg-warning-soft text-warning rounded">
+          <span className="neo-code text-xs px-2 py-0.5 bg-neo-orange-soft text-neo-on-orange-soft border-2 border-neo-orange rounded-md">
             確認待ち
           </span>
         )}
       </td>
-      <td className="px-4 py-3 text-xs text-fg-soft">{dt}</td>
+      <td className="px-4 py-3 neo-code text-xs text-neo-fg-soft">{dt}</td>
       <td className="px-4 py-3 text-right">
         <button
           type="button"
           onClick={remove}
           disabled={pending}
-          className="text-xs text-danger hover:text-danger disabled:opacity-50"
+          className="neo-code text-xs text-neo-danger hover:underline disabled:opacity-50"
         >
           削除
         </button>

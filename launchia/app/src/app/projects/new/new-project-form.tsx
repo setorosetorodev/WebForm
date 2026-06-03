@@ -60,8 +60,8 @@ export function NewProjectForm() {
   return (
     <form onSubmit={submit} className="space-y-5">
       <div>
-        <label className="block text-sm font-medium text-fg-soft mb-1.5">
-          プロジェクト名 <span className="text-danger">*</span>
+        <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">
+          プロジェクト名 <span className="text-neo-danger">*</span>
         </label>
         <input
           type="text"
@@ -70,14 +70,14 @@ export function NewProjectForm() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="例: だすね"
-          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          className="neo-input"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-fg-soft mb-1.5">
-          slug <span className="text-danger">*</span>
-          <span className="text-xs text-fg-soft font-normal ml-2">
+        <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">
+          slug <span className="text-neo-danger">*</span>
+          <span className="neo-body text-xs text-neo-fg-faint font-normal ml-2">
             URL の一部 (例: launchia.net/p/dasune)
           </span>
         </label>
@@ -90,13 +90,13 @@ export function NewProjectForm() {
           value={slug}
           onChange={(e) => setSlug(e.target.value.toLowerCase())}
           placeholder="例: dasune"
-          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft font-mono text-sm"
+          className="neo-input neo-code text-sm"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-fg-soft mb-1.5">
-          説明文 <span className="text-xs text-fg-soft font-normal">(任意)</span>
+        <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">
+          説明文 <span className="neo-body text-xs text-neo-fg-faint font-normal">(任意)</span>
         </label>
         <textarea
           value={description}
@@ -104,26 +104,26 @@ export function NewProjectForm() {
           maxLength={2000}
           rows={3}
           placeholder="プロジェクトの説明..."
-          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          className="neo-input"
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-fg-soft mb-1.5">
-            リリース予定日 <span className="text-xs text-fg-soft font-normal">(任意)</span>
+          <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">
+            リリース予定日 <span className="neo-body text-xs text-neo-fg-faint font-normal">(任意)</span>
           </label>
           <input
             type="date"
             value={launchTargetDate}
             onChange={(e) => setLaunchTargetDate(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+            className="neo-input"
           />
-          <p className="text-xs text-fg-faint mt-1">カウントダウンに使います。</p>
+          <p className="neo-body text-xs text-neo-fg-faint mt-1">カウントダウンに使います。</p>
         </div>
         <div>
-          <label className="block text-sm font-medium text-fg-soft mb-1.5">
-            目標登録数 <span className="text-xs text-fg-soft font-normal">(任意)</span>
+          <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">
+            目標登録数 <span className="neo-body text-xs text-neo-fg-faint font-normal">(任意)</span>
           </label>
           <input
             type="number"
@@ -131,9 +131,9 @@ export function NewProjectForm() {
             value={goalCount}
             onChange={(e) => setGoalCount(e.target.value)}
             placeholder="例: 1000"
-            className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+            className="neo-input"
           />
-          <p className="text-xs text-fg-faint mt-1">進捗バー・達成度に使います。</p>
+          <p className="neo-body text-xs text-neo-fg-faint mt-1">進捗バー・達成度に使います。</p>
         </div>
       </div>
 
@@ -143,11 +143,11 @@ export function NewProjectForm() {
             type="checkbox"
             checked={ideaPagePublic}
             onChange={(e) => setIdeaPagePublic(e.target.checked)}
-            className="w-4 h-4 accent-primary"
+            className="w-4 h-4 accent-neo-primary"
           />
-          <span className="text-sm text-fg-soft">
+          <span className="neo-body text-sm text-neo-fg-soft">
             アイデアページを公開する{' '}
-            <span className="text-xs text-fg-soft">
+            <span className="neo-code text-xs text-neo-fg-faint">
               (launchia.net/p/{slug || 'slug'})
             </span>
           </span>
@@ -157,14 +157,14 @@ export function NewProjectForm() {
             type="checkbox"
             checked={embedEnabled}
             onChange={(e) => setEmbedEnabled(e.target.checked)}
-            className="w-4 h-4 accent-primary"
+            className="w-4 h-4 accent-neo-primary"
           />
-          <span className="text-sm text-fg-soft">埋め込みウィジェットを有効にする</span>
+          <span className="neo-body text-sm text-neo-fg-soft">埋め込みウィジェットを有効にする</span>
         </label>
       </div>
 
       {errorMessage && (
-        <div className="text-sm text-danger bg-danger-soft rounded-lg p-3 border border-danger">
+        <div className="bg-neo-danger-soft border-2 border-neo-danger rounded-xl p-3 neo-body text-sm text-neo-danger">
           {errorMessage}
         </div>
       )}
@@ -172,7 +172,7 @@ export function NewProjectForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full px-4 py-3 bg-primary hover:bg-primary-hover text-on-primary font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="neo-btn w-full bg-neo-primary text-neo-on-primary rounded-xl py-3"
       >
         {pending ? '作成中...' : 'プロジェクトを作成'}
       </button>

@@ -51,8 +51,34 @@ export const inviteCodes = pgTable('launchia_invite_codes', {
   expiresAt: timestamp('expires_at', { withTimezone: true }),
   issuedByUserId: uuid('issued_by_user_id').references(() => users.id, { onDelete: 'set null' }),
   notes: text('notes'),
+  // 論理削除（誤発行の取り消し等）。過去キャンペーンの調査用に行は残す。
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
+
+// 招待コードの「申請」。公開 /apply から作成され、運営が確認してコードを発行する。
+export const inviteRequests = pgTable(
+  'launchia_invite_requests',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    email: text('email').notNull(),
+    name: text('name'),
+    projectName: text('project_name'),
+    url: text('url'),
+    message: text('message'),
+    status: text('status').notNull().default('pending'), // pending | approved | rejected
+    handledAt: timestamp('handled_at', { withTimezone: true }),
+    issuedCode: text('issued_code'),
+    handledByUserId: uuid('handled_by_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    createdAtIdx: index('launchia_invite_requests_created_at_idx').on(table.createdAt),
+    emailIdx: index('launchia_invite_requests_email_idx').on(table.email),
+  }),
+)
 
 export const projects = pgTable('launchia_projects', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -154,6 +180,8 @@ export type MagicLinkToken = typeof magicLinkTokens.$inferSelect
 export type NewMagicLinkToken = typeof magicLinkTokens.$inferInsert
 export type InviteCode = typeof inviteCodes.$inferSelect
 export type NewInviteCode = typeof inviteCodes.$inferInsert
+export type InviteRequest = typeof inviteRequests.$inferSelect
+export type NewInviteRequest = typeof inviteRequests.$inferInsert
 export type RankToken = typeof rankTokens.$inferSelect
 export type NewRankToken = typeof rankTokens.$inferInsert
 export type RankView = typeof rankViews.$inferSelect
@@ -163,6 +191,7 @@ export const schema = {
   users,
   magicLinkTokens,
   inviteCodes,
+  inviteRequests,
   projects,
   waitlistEntries,
   rankTokens,

@@ -37,7 +37,7 @@ export function EmbedInfo({ project }: { project: Project }) {
 
   if (!project.embedEnabled && !project.ideaPagePublic) {
     return (
-      <div className="bg-warning-soft border border-warning rounded-xl p-4 text-sm text-warning">
+      <div className="bg-neo-orange-soft border-2 border-neo-orange rounded-xl p-4 neo-body text-sm text-neo-on-orange-soft">
         埋め込みもアイデア公開も無効です。下の設定からどちらかを有効にしてください。
       </div>
     )
@@ -46,41 +46,39 @@ export function EmbedInfo({ project }: { project: Project }) {
   return (
     <div className="space-y-4">
       {project.ideaPagePublic && (
-        <div className="bg-card rounded-xl p-5 border border-line">
+        <div className="bg-neo-card neo-card rounded-xl p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-fg text-sm">
-              アイデアページ URL
-            </h3>
+            <h3 className="neo-headline text-neo-fg text-sm">アイデアページ URL</h3>
             <button
               type="button"
               onClick={() => copy(ideaUrl, 'idea')}
-              className="text-xs px-3 py-1 rounded bg-primary-soft text-on-primary-soft hover:opacity-80"
+              className="neo-btn neo-code text-xs px-3 py-1.5 rounded-lg bg-neo-primary-soft text-neo-on-primary-soft"
             >
               {copied === 'idea' ? '✓ コピーしました' : 'コピー'}
             </button>
           </div>
-          <code className="block bg-muted rounded p-3 text-xs font-mono text-fg-soft break-all">
+          <code className="block bg-neo-surface neo-border-thin rounded-lg p-3 neo-code text-xs text-neo-fg-soft break-all">
             {ideaUrl}
           </code>
         </div>
       )}
 
       {project.embedEnabled && (
-        <div className="bg-card rounded-xl p-5 border border-line">
+        <div className="bg-neo-card neo-card rounded-xl p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="font-semibold text-fg text-sm">LP 埋め込みコード</h3>
+            <h3 className="neo-headline text-neo-fg text-sm">LP 埋め込みコード</h3>
             <button
               type="button"
               onClick={() => copy(embedSnippet, 'embed')}
-              className="text-xs px-3 py-1 rounded bg-primary-soft text-on-primary-soft hover:opacity-80"
+              className="neo-btn neo-code text-xs px-3 py-1.5 rounded-lg bg-neo-primary-soft text-neo-on-primary-soft"
             >
               {copied === 'embed' ? '✓ コピーしました' : 'コピー'}
             </button>
           </div>
-          <pre className="bg-muted rounded p-3 text-xs font-mono text-fg-soft overflow-x-auto whitespace-pre">
+          <pre className="bg-neo-surface neo-border-thin rounded-lg p-3 neo-code text-xs text-neo-fg-soft overflow-x-auto whitespace-pre">
             {embedSnippet}
           </pre>
-          <p className="text-xs text-fg-soft mt-2">
+          <p className="neo-body text-xs text-neo-fg-soft mt-2">
             自社 LP の HTML に貼り付けてください。
           </p>
         </div>

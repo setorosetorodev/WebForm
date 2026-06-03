@@ -26,7 +26,7 @@ Phase 1 を本番（launchia.net, Cloudflare）にデプロイした後の運用
 | DKIM | `resend._domainkey.launchia.net` | `p=MIGf...`（公開鍵 TXT） | Verified |
 | SPF (return-path) | `send.launchia.net` | `v=spf1 include:amazonses.com ~all` | Verified |
 | return-path MX | `send.launchia.net` | `feedback-smtp.ap-northeast-1.amazonses.com`（prio 10） | Verified |
-| DMARC | `_dmarc.launchia.net` | `v=DMARC1; p=none; rua=mailto:setorosetorodev@gmail.com` | 設定済 |
+| DMARC | `_dmarc.launchia.net` | `v=DMARC1; p=quarantine; rua=mailto:setorosetorodev@gmail.com` | 2026-06-03 に `p=none`→`p=quarantine` へ引き上げ済（veda/stan/8.8.8.8 で確認） |
 
 > 注: `From` はルートドメイン `launchia.net`、エンベロープ送信元（Return-Path）は
 > `send.launchia.net`。受信側の SPF 判定は Return-Path（`send.launchia.net`）を見るので、
@@ -63,7 +63,8 @@ Resolve-DnsName -Type TXT resend._domainkey.launchia.net -Server veda.ns.cloudfl
 ### 既知のフォローアップ（バグではない）
 - 新規ドメインのため、初回は Microsoft/Outlook 系で迷惑メール判定されやすい
   （ヘッダ例: `SCL:5, CAT:SPM, SFTY:9.25`）。送信実績が貯まると改善。
-- 数日 DMARC の集計レポート（rua）を見て問題なければ、`p=none` → `p=quarantine` に引き上げる。
+- ~~数日 DMARC の集計レポート（rua）を見て問題なければ、`p=none` → `p=quarantine` に引き上げる。~~
+  → **2026-06-03 完了**。`p=quarantine` に引き上げ（権威 veda/stan + 公開 8.8.8.8 で反映確認）。さらに上げるなら次は `p=reject`（要 rua 監視・送信実績が安定してから）。
 
 ---
 

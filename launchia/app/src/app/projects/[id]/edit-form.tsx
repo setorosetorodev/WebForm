@@ -87,69 +87,69 @@ export function EditForm({ project }: { project: Project }) {
   return (
     <form onSubmit={submit} className="space-y-5">
       <div>
-        <label className="block text-sm font-medium text-fg-soft mb-1.5">プロジェクト名</label>
+        <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">プロジェクト名</label>
         <input
           type="text"
           required
           maxLength={80}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          className="neo-input"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-fg-soft mb-1.5">説明文</label>
+        <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">説明文</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           maxLength={2000}
           rows={4}
-          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          className="neo-input"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-fg-soft mb-1.5">
-          カバー画像 URL <span className="text-xs text-fg-soft font-normal">(任意)</span>
+        <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">
+          カバー画像 URL <span className="neo-body text-xs text-neo-fg-faint font-normal">(任意)</span>
         </label>
         <input
           type="url"
           value={coverImageUrl}
           onChange={(e) => setCoverImageUrl(e.target.value)}
           placeholder="https://example.com/cover.png"
-          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          className="neo-input"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-fg-soft mb-1.5">
-          LP URL <span className="text-xs text-fg-soft font-normal">(自社 LP がある場合)</span>
+        <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">
+          LP URL <span className="neo-body text-xs text-neo-fg-faint font-normal">(自社 LP がある場合)</span>
         </label>
         <input
           type="url"
           value={landingPageUrl}
           onChange={(e) => setLandingPageUrl(e.target.value)}
           placeholder="https://dasune.net"
-          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+          className="neo-input"
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-fg-soft mb-1.5">
-            リリース予定日 <span className="text-xs text-fg-soft font-normal">(任意)</span>
+          <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">
+            リリース予定日 <span className="neo-body text-xs text-neo-fg-faint font-normal">(任意)</span>
           </label>
           <input
             type="date"
             value={launchTargetDate}
             onChange={(e) => setLaunchTargetDate(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+            className="neo-input"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-fg-soft mb-1.5">
-            目標登録数 <span className="text-xs text-fg-soft font-normal">(任意)</span>
+          <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">
+            目標登録数 <span className="neo-body text-xs text-neo-fg-faint font-normal">(任意)</span>
           </label>
           <input
             type="number"
@@ -157,7 +157,7 @@ export function EditForm({ project }: { project: Project }) {
             value={goalCount}
             onChange={(e) => setGoalCount(e.target.value)}
             placeholder="例: 1000"
-            className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft"
+            className="neo-input"
           />
         </div>
       </div>
@@ -168,51 +168,51 @@ export function EditForm({ project }: { project: Project }) {
             type="checkbox"
             checked={ideaPagePublic}
             onChange={(e) => setIdeaPagePublic(e.target.checked)}
-            className="w-4 h-4 accent-primary"
+            className="w-4 h-4 accent-neo-primary"
           />
-          <span className="text-sm text-fg-soft">アイデアページを公開する</span>
+          <span className="neo-body text-sm text-neo-fg-soft">アイデアページを公開する</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
             checked={embedEnabled}
             onChange={(e) => setEmbedEnabled(e.target.checked)}
-            className="w-4 h-4 accent-primary"
+            className="w-4 h-4 accent-neo-primary"
           />
-          <span className="text-sm text-fg-soft">埋め込みウィジェットを有効にする</span>
+          <span className="neo-body text-sm text-neo-fg-soft">埋め込みウィジェットを有効にする</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
             checked={requireConsent}
             onChange={(e) => setRequireConsent(e.target.checked)}
-            className="w-4 h-4 accent-primary"
+            className="w-4 h-4 accent-neo-primary"
           />
-          <span className="text-sm text-fg-soft">プライバシーポリシー同意を必須にする</span>
+          <span className="neo-body text-sm text-neo-fg-soft">プライバシーポリシー同意を必須にする</span>
         </label>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-fg-soft mb-1.5">
+        <label className="neo-label block text-sm text-neo-fg-soft mb-1.5">
           埋め込み許可ドメイン{' '}
-          <span className="text-xs text-fg-soft font-normal">(1 行 1 URL、空なら全許可)</span>
+          <span className="neo-body text-xs text-neo-fg-faint font-normal">(1 行 1 URL、空なら全許可)</span>
         </label>
         <textarea
           value={allowedOrigins}
           onChange={(e) => setAllowedOrigins(e.target.value)}
           rows={3}
           placeholder={'https://dasune.net\nhttps://www.dasune.net'}
-          className="w-full px-4 py-2.5 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft font-mono text-sm"
+          className="neo-input neo-code text-sm"
         />
       </div>
 
       {errorMessage && (
-        <div className="text-sm text-danger bg-danger-soft rounded-lg p-3 border border-danger">
+        <div className="bg-neo-danger-soft border-2 border-neo-danger rounded-xl p-3 neo-body text-sm text-neo-danger">
           {errorMessage}
         </div>
       )}
       {status === 'saved' && (
-        <div className="text-sm text-success bg-success-soft rounded-lg p-3 border border-success">
+        <div className="bg-neo-green-soft border-2 border-neo-green rounded-xl p-3 neo-body text-sm text-neo-on-green-soft">
           ✓ 保存しました
         </div>
       )}
@@ -220,7 +220,7 @@ export function EditForm({ project }: { project: Project }) {
       <button
         type="submit"
         disabled={status === 'submitting'}
-        className="px-6 py-2.5 bg-primary hover:bg-primary-hover text-on-primary text-sm font-semibold rounded-lg disabled:opacity-50"
+        className="neo-btn bg-neo-primary text-neo-on-primary text-sm rounded-xl px-6 py-2.5"
       >
         {status === 'submitting' ? '保存中...' : '変更を保存'}
       </button>

@@ -17,10 +17,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/login?error=invalid_token', request.url))
   }
 
+  // 運営者（ADMIN_EMAILS）なら招待管理画面へ、それ以外は通常ダッシュボードへ着地
+  const data = (await apiRes.json().catch(() => ({}))) as { isAdmin?: boolean }
+  const target = data.isAdmin ? '/projects/invites' : '/projects'
+
   // API から返ってきた Set-Cookie をブラウザに転送
   const setCookieHeader = apiRes.headers.get('set-cookie')
 
-  const redirect = NextResponse.redirect(new URL('/projects', request.url))
+  const redirect = NextResponse.redirect(new URL(target, request.url))
   if (setCookieHeader) {
     redirect.headers.set('set-cookie', setCookieHeader)
   }

@@ -21,10 +21,12 @@ import { recordView } from '../repositories/rank-views'
 import { generateToken, hashToken, hashUserAgent } from '../lib/token'
 import {
   createEmailContext,
+  sendInviteRequestNotificationEmail,
   sendUnsubscribedEmail,
   sendWaitlistConfirmationEmail,
   sendWaitlistConfirmedEmail,
 } from '../lib/email'
+import { createInviteRequest } from '../repositories/invite-requests'
 
 const publicRoutes = new Hono<{ Bindings: Env }>()
 
@@ -32,6 +34,15 @@ const registerSchema = z.object({
   email: z.string().email(),
   consent: z.boolean().optional(),
   source: z.enum(['embed', 'idea_page', 'api']).optional(),
+})
+
+const inviteRequestSchema = z.object({
+  email: z.string().email(),
+  name: z.string().max(120).optional(),
+  project_name: z.string().max(200).optional(),
+  url: z.union([z.string().url(), z.literal('')]).optional(),
+  message: z.string().max(2000).optional(),
+  company: z.string().optional(), // ハニーポット（人間は空のまま / bot が埋める）
 })
 
 function applyCorsHeaders(c: Context<{ Bindings: Env }>, origin: string) {
@@ -281,6 +292,57 @@ publicRoutes.post('/rank/:token/unsubscribe', async (c) => {
   c.header('Cache-Control', 'no-store')
 
   return c.json({ unsubscribed: true })
+})
+
+// 招待コードの申請（公開）。保存して運営に通知する。
+publicRoutes.post('/invite-requests', async (c) => {
+  let body: unknown
+  try {
+    body = await c.req.json()
+  } catch {
+    return c.json({ error: 'invalid_json' }, 400)
+  }
+
+  const parsed = inviteRequestSchema.safeParse(body)
+  if (!parsed.success) {
+    return c.json({ error: 'validation_failed', details: parsed.error.format() }, 400)
+  }
+
+  const { email, name, project_name, url, message, company } = parsed.data
+  c.header('Cache-Control', 'no-store')
+
+  // ハニーポットに入力があれば bot とみなし、保存も通知もせず成功を装う
+  if (company && company.length > 0) {
+    return c.json({ ok: true }, 201)
+  }
+
+  const db = createDbClient(c.env.DATABASE_URL)
+  const request = await createInviteRequest(db, {
+    email,
+    name: name ?? null,
+    projectName: project_name ?? null,
+    url: url ? url : null,
+    message: message ?? null,
+  })
+
+  try {
+    const emailCtx = createEmailContext(c.env)
+    const to = (c.env.INVITE_NOTIFY_TO ?? c.env.ADMIN_EMAILS ?? '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0)
+    if (to.length > 0) {
+      await sendInviteRequestNotificationEmail(emailCtx, {
+        to,
+        request,
+        adminUrl: `${c.env.APP_BASE_URL}/projects/invites`,
+      })
+    }
+  } catch (err) {
+    console.error('Failed to send invite request notification:', err)
+  }
+
+  return c.json({ ok: true }, 201)
 })
 
 export { publicRoutes }
