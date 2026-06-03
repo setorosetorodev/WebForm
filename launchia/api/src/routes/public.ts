@@ -327,7 +327,7 @@ publicRoutes.post('/invite-requests', async (c) => {
 
   try {
     const emailCtx = createEmailContext(c.env)
-    const to = (c.env.INVITE_NOTIFY_TO ?? c.env.ADMIN_EMAILS ?? '')
+    const to = (c.env.INVITE_NOTIFY_TO ?? '')
       .split(',')
       .map((s) => s.trim())
       .filter((s) => s.length > 0)

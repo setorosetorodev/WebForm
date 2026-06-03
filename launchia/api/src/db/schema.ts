@@ -22,6 +22,8 @@ export const users = pgTable('launchia_users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').notNull().unique(),
   displayName: text('display_name'),
+  // 運営者フラグ（招待管理 /projects/invites のアクセス制御。複数可・再デプロイ不要で増減）
+  isAdmin: boolean('is_admin').notNull().default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })

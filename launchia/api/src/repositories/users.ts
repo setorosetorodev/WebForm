@@ -23,3 +23,17 @@ export async function createUser(
     .returning()
   return user
 }
+
+/** 運営者フラグの付与/解除（bootstrap・運営者管理用）。 */
+export async function setUserAdmin(
+  db: DbClient,
+  email: string,
+  isAdmin: boolean,
+): Promise<User | null> {
+  const [user] = await db
+    .update(users)
+    .set({ isAdmin, updatedAt: new Date() })
+    .where(eq(users.email, email))
+    .returning()
+  return user ?? null
+}

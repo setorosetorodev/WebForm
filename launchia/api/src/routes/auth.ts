@@ -11,8 +11,8 @@ import {
   createMagicLinkToken,
 } from '../repositories/auth'
 import { consumeInviteCode, findValidInviteCode } from '../repositories/invites'
-import { createUser, findUserByEmail } from '../repositories/users'
-import { isAdminEmail, requireAuth } from '../middleware/auth'
+import { createUser, findUserByEmail, findUserById } from '../repositories/users'
+import { requireAuth } from '../middleware/auth'
 
 const authRoutes = new Hono<{ Bindings: Env }>()
 
@@ -93,10 +93,11 @@ authRoutes.get('/verify', async (c) => {
     maxAge: sessionMaxAge(),
   })
 
+  const verifiedUser = await findUserById(db, magicToken.userId)
   return c.json({
     ok: true,
     userId: magicToken.userId,
-    isAdmin: isAdminEmail(c.env, magicToken.email),
+    isAdmin: verifiedUser?.isAdmin ?? false,
   })
 })
 
@@ -107,7 +108,7 @@ authRoutes.post('/logout', async (c) => {
 
 authRoutes.get('/me', requireAuth(), (c) => {
   const user = c.get('user')
-  return c.json({ user, isAdmin: isAdminEmail(c.env, user.email) })
+  return c.json({ user, isAdmin: user.isAdmin })
 })
 
 export { authRoutes }
