@@ -41,7 +41,9 @@
 - **2026-06-03**: 開発者画面を **neo に統一**（単一ソース `globals.css` の `--color-neo-*` ＋ `app/src/app/brand.ts` の `NEO_CSS`／`<NeoStyle/>` で読込。login / projects(new/詳細/entries) / apply / 運営 invites が参照）。
   **招待コード申請フロー＋運営管理画面**を実装（`/apply` 公開申請 → `/projects/invites` で承認/却下/コード割当・発行・上限±1・論理削除/復元・メモ編集・集計サマリー）。ログインメールも neo 化。運営者識別は DB（`users.is_admin`）。
   - **2026-06-04 本番反映済み**（app＋api 両方デプロイ。invites/ダッシュボード/neo メール 稼働確認）。`invite_requests`・`invite_codes.deleted_at`・`users.is_admin` は prod Neon 適用済み、運営者 `setorosetorodev@gmail.com` を `is_admin=true` に設定済み。
-  - **⚠️ デプロイの落とし穴**: `git push master` で **app（OpenNext）は自動再ビルドされるが api(Worker) は取り残される**ことがある。api を変更したら必ず `cd launchia/api && npx wrangler deploy`（top-level と `[env.production]` は同名 `launchia-api` ＝同一 Worker。secret は Worker に永続）。app/api の契約ズレ（例: 旧 api が per-project `stats` を返さず dashboard が 500）に注意。
+  - **⚠️ デプロイの落とし穴（重要）**: `git push master` で自動デプロイされるのは **app（OpenNext）だけ**。他は手動が要る:
+    - **api(Worker)**: `cd launchia/api && npx wrangler deploy`（top-level と `[env.production]` は同名 `launchia-api` ＝同一 Worker。secret は Worker に永続）。app/api の契約ズレ（例: 旧 api が per-project `stats` を返さず dashboard が 500）に注意。
+    - **widget(Cloudflare Pages `launchia-widget`)**: **Git 連携なし（直接アップロード型）・本番ブランチ=`main`**。push では絶対に出ない。`cd launchia/widget && npm run build && npx wrangler pages deploy dist --project-name launchia-widget --branch main --commit-dirty=true`（`--branch main` を外すと preview 扱いで widget.launchia.net に出ない）。確認: `curl -s https://widget.launchia.net/launchia-widget.js | grep -o ff7a00`。
   - 未了: prod Worker secret `INVITE_NOTIFY_TO`（申請通知先。未設定でも通知が飛ばないだけ）。
 - **2026-06-04**: エンドユーザー配色を **Mango Pop** に決定し本番適用（鮮烈オレンジ×ホットピンク。warm/light 固定）。単一ソース＝`globals.css` の `--color-eu-*` ＋ `brand.ts` の `EU_CSS` ＋ `eu-style.tsx` の `<EuStyle/>`。**`/p`・`/r`（+登録/解除フォーム）・widget（Shadow DOM 内に同値内蔵）にデプロイ済み**。詳細は `docs/DESIGN.md`。
   ※ 5案探索ページ `/preview/enduser-palettes` は別ブランチ `design/enduser-palettes` に残置（**本番には出さない**。選定は完了）。
