@@ -2,25 +2,36 @@ const template = document.createElement('template')
 
 template.innerHTML = `
 <style>
+  /* Launchia エンドユーザー neo（Mango Pop）。Shadow DOM 内に閉じる＝ホストに影響しない。
+     色トークンは app の --color-eu-* と同値（出典: globals.css / brand.ts EU_CSS）。 */
+  @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@600;700;800&display=swap');
+
   :host {
     display: block;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    color: #1f2937;
-    --primary-color: #3b82f6;
-    --primary-hover: #2563eb;
-    --error-color: #ef4444;
-    --success-color: #10b981;
-    --border-color: #e5e7eb;
-    --bg-color: #ffffff;
-    --input-bg: #f9fafb;
-    --label-color: #4b5563;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--eu-fg);
+    --eu-ink: #2a1c00;
+    --eu-fg: #2a1c00;
+    --eu-fg-soft: #6b5320;
+    --eu-fg-faint: #9c854f;
+    --eu-card: #ffffff;
+    --eu-surface: #fff0d0;
+    --eu-primary: #ff7a00;
+    --eu-primary-strong: #ff9a1f;
+    --eu-on-primary: #ffffff;
+    --eu-accent: #ff2e63;
+    --eu-chip-bg: #ffe8b0;
+    --eu-chip-fg: #6b4a00;
   }
 
   .form-container {
-    background: var(--bg-color);
-    border-radius: 12px;
+    background: var(--eu-card);
+    border: 3px solid var(--eu-ink);
+    box-shadow: 5px 5px 0 0 var(--eu-ink);
+    border-radius: 16px;
     max-width: 480px;
     margin: 0 auto;
+    padding: 24px;
     box-sizing: border-box;
   }
 
@@ -31,31 +42,33 @@ template.innerHTML = `
   input[type="email"] {
     width: 100%;
     padding: 12px 14px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border: 3px solid var(--eu-ink);
+    border-radius: 12px;
     font-size: 1rem;
-    background-color: var(--input-bg);
-    transition: all 0.2s ease;
+    background-color: var(--eu-card);
+    transition: box-shadow 0.12s ease;
     box-sizing: border-box;
     font-family: inherit;
-    color: inherit;
+    color: var(--eu-fg);
+  }
+
+  input::placeholder {
+    color: var(--eu-fg-faint);
   }
 
   input:focus {
     outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-    background-color: #fff;
+    box-shadow: 4px 4px 0 0 var(--eu-primary);
   }
 
   input.invalid {
-    border-color: var(--error-color);
+    box-shadow: 4px 4px 0 0 var(--eu-accent);
   }
 
   .field-error {
-    color: var(--error-color);
+    color: var(--eu-accent);
     font-size: 0.75rem;
-    margin-top: 6px;
+    margin-top: 8px;
     display: none;
   }
 
@@ -68,7 +81,7 @@ template.innerHTML = `
     align-items: center;
     gap: 8px;
     font-size: 0.875rem;
-    color: var(--label-color);
+    color: var(--eu-fg-soft);
     margin-bottom: 14px;
   }
 
@@ -80,7 +93,7 @@ template.innerHTML = `
     width: 16px;
     height: 16px;
     cursor: pointer;
-    accent-color: var(--primary-color);
+    accent-color: var(--eu-primary);
     flex-shrink: 0;
   }
 
@@ -90,7 +103,8 @@ template.innerHTML = `
   }
 
   .consent-group a {
-    color: var(--primary-color);
+    color: var(--eu-primary);
+    font-weight: 600;
     text-decoration: none;
   }
 
@@ -99,14 +113,14 @@ template.innerHTML = `
   }
 
   :host([require-consent="true"]) .consent-group input[type="checkbox"].invalid {
-    outline: 2px solid var(--error-color);
+    outline: 2px solid var(--eu-accent);
     outline-offset: 2px;
     border-radius: 3px;
   }
 
   .consent-error {
     display: none;
-    color: var(--error-color);
+    color: var(--eu-accent);
     font-size: 0.75rem;
     margin-top: -8px;
     margin-bottom: 14px;
@@ -120,34 +134,42 @@ template.innerHTML = `
   .submit-btn {
     width: 100%;
     padding: 14px 20px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
+    background-color: var(--eu-primary);
+    color: var(--eu-on-primary);
+    border: 3px solid var(--eu-ink);
+    box-shadow: 4px 4px 0 0 var(--eu-ink);
+    border-radius: 12px;
+    font-family: 'Lexend', system-ui, sans-serif;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
-    font-family: inherit;
   }
 
   .submit-btn:hover:not(:disabled) {
-    background-color: var(--primary-hover);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 var(--eu-ink);
+  }
+
+  .submit-btn:active:not(:disabled) {
+    transform: translate(0, 0);
+    box-shadow: 0 0 0 0 var(--eu-ink);
   }
 
   .submit-btn:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
+    box-shadow: 4px 4px 0 0 var(--eu-ink);
   }
 
   .spinner {
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.4);
     border-radius: 50%;
     border-top-color: #fff;
     animation: spin 0.7s linear infinite;
@@ -191,21 +213,25 @@ template.innerHTML = `
   }
 
   .status-title {
+    font-family: 'Lexend', system-ui, sans-serif;
     font-size: 1.125rem;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: -0.01em;
     margin-bottom: 8px;
-    color: #1f2937;
+    color: var(--eu-fg);
   }
 
   .status-desc {
-    color: var(--label-color);
+    color: var(--eu-fg-soft);
     font-size: 0.9rem;
     line-height: 1.6;
   }
 
   .rank-display {
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    border-radius: 10px;
+    background: var(--eu-chip-bg);
+    border: 2px solid var(--eu-ink);
+    box-shadow: 3px 3px 0 0 var(--eu-ink);
+    border-radius: 12px;
     padding: 18px;
     margin: 16px 0;
     text-align: center;
@@ -213,20 +239,23 @@ template.innerHTML = `
 
   .rank-label {
     font-size: 0.75rem;
-    color: #6b7280;
+    color: var(--eu-chip-fg);
     margin-bottom: 4px;
   }
 
   .rank-value {
-    font-size: 2.25rem;
+    font-family: 'Lexend', system-ui, sans-serif;
+    font-size: 2.5rem;
     font-weight: 800;
-    color: var(--primary-color);
+    letter-spacing: -0.02em;
+    color: var(--eu-primary);
   }
 
   .rank-value-unit {
+    font-family: 'Lexend', system-ui, sans-serif;
     font-size: 1rem;
-    font-weight: 600;
-    color: var(--primary-color);
+    font-weight: 700;
+    color: var(--eu-fg);
     margin-left: 4px;
   }
 
@@ -243,19 +272,23 @@ template.innerHTML = `
   :host([state="error"]) .status-panel.error { display: block; }
 
   .reset-btn {
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--label-color);
+    background: var(--eu-card);
+    border: 2px solid var(--eu-ink);
+    box-shadow: 2px 2px 0 0 var(--eu-ink);
+    color: var(--eu-fg);
     padding: 8px 16px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 0.875rem;
+    font-weight: 600;
     margin-top: 12px;
     font-family: inherit;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
   }
 
   .reset-btn:hover {
-    background: #f9fafb;
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 0 var(--eu-ink);
   }
 </style>
 
