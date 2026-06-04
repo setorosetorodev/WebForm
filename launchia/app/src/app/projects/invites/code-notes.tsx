@@ -28,19 +28,20 @@ export function CodeNotes({ codeId, notes }: { codeId: string; notes: string | n
   }
 
   if (!editing) {
+    // 鉛筆だけがリンク（押下で編集）。メモ本文はただのテキスト。空なら鉛筆のみ。
     return (
-      <button
-        type="button"
-        onClick={() => setEditing(true)}
-        className="neo-body text-xs text-left hover:underline"
-        title="メモを編集"
-      >
-        {notes ? (
-          <span className="text-neo-fg-soft">{notes} ✏️</span>
-        ) : (
-          <span className="text-neo-fg-faint">＋ メモ</span>
-        )}
-      </button>
+      <span className="inline-flex items-baseline gap-1.5 text-xs">
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          className="shrink-0 leading-none text-neo-primary hover:text-neo-primary-strong cursor-pointer"
+          title="メモを編集"
+          aria-label="メモを編集"
+        >
+          ✏️
+        </button>
+        {notes && <span className="neo-body text-neo-fg-soft break-all">{notes}</span>}
+      </span>
     )
   }
 

@@ -178,8 +178,11 @@ function Metric({
   )
 }
 
+const EMPTY_STATS: ProjectStats = { total: 0, confirmed: 0, pending: 0, todayNew: 0, daily: [0, 0, 0, 0, 0, 0, 0] }
+
 function ProjectCard({ p }: { p: DashProject }) {
-  const { stats } = p
+  // API 側の契約ドリフト（stats 未付与の旧 api 等）でも 500 にせず素直に 0 表示へ退避する
+  const stats = p.stats ?? EMPTY_STATS
   const goal = p.goalCount ?? null
   const total = stats.total
   const confirmedPct = goal ? Math.min((stats.confirmed / goal) * 100, 100) : 0
