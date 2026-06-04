@@ -43,7 +43,8 @@
   - **2026-06-04 本番反映済み**（app＋api 両方デプロイ。invites/ダッシュボード/neo メール 稼働確認）。`invite_requests`・`invite_codes.deleted_at`・`users.is_admin` は prod Neon 適用済み、運営者 `setorosetorodev@gmail.com` を `is_admin=true` に設定済み。
   - **⚠️ デプロイの落とし穴**: `git push master` で **app（OpenNext）は自動再ビルドされるが api(Worker) は取り残される**ことがある。api を変更したら必ず `cd launchia/api && npx wrangler deploy`（top-level と `[env.production]` は同名 `launchia-api` ＝同一 Worker。secret は Worker に永続）。app/api の契約ズレ（例: 旧 api が per-project `stats` を返さず dashboard が 500）に注意。
   - 未了: prod Worker secret `INVITE_NOTIFY_TO`（申請通知先。未設定でも通知が飛ばないだけ）。
-  ※ 別ブランチ `design/enduser-palettes` にエンドユーザー向け暖色配色の見本（`/preview/enduser-palettes`・5案）を探索中（未確定・未マージ）。
+- **2026-06-04**: エンドユーザー配色を **Mango Pop** に決定し本番適用（鮮烈オレンジ×ホットピンク。warm/light 固定）。単一ソース＝`globals.css` の `--color-eu-*` ＋ `brand.ts` の `EU_CSS` ＋ `eu-style.tsx` の `<EuStyle/>`。**`/p`・`/r`（+登録/解除フォーム）・widget（Shadow DOM 内に同値内蔵）にデプロイ済み**。詳細は `docs/DESIGN.md`。
+  ※ 5案探索ページ `/preview/enduser-palettes` は別ブランチ `design/enduser-palettes` に残置（**本番には出さない**。選定は完了）。
 
 ### 次にやること = **Phase 2**
 着手先は `docs/20260529_launchia_phase2_design_notes.md`。候補（優先順は要相談）:
