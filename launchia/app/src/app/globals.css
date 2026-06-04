@@ -77,6 +77,27 @@
   --color-neo-on-danger: #ffffff;
   --color-neo-danger-soft: #ffdad6;
 
+  /* ============================================================
+     エンドユーザー向け（登録者）= Mango Pop（neo 構造 + 暖色）= 単一ソース
+     対象: /p（アイデア）・/r（順位）。warm/light 固定（ダーク反転しない＝.dark で上書きしない）。
+     authored クラスは src/app/brand.ts(EU_CSS)。出典: /preview/enduser-palettes で選定。
+     開発者 neo（藍×橙）とは別系統。混ぜない。
+     ============================================================ */
+  --color-eu-bg: #fffaef;
+  --color-eu-surface: #fff0d0;
+  --color-eu-card: #ffffff;
+  --color-eu-ink: #2a1c00;            /* 極太枠・ハード影 */
+  --color-eu-fg: #2a1c00;
+  --color-eu-fg-soft: #6b5320;
+  --color-eu-fg-faint: #9c854f;
+  --color-eu-primary: #ff7a00;        /* 鮮烈オレンジ（主役） */
+  --color-eu-on-primary: #ffffff;
+  --color-eu-primary-strong: #ff9a1f;
+  --color-eu-accent: #ff2e63;         /* ホットピンク */
+  --color-eu-accent2: #ffd000;        /* イエロー */
+  --color-eu-chip-bg: #ffe8b0;
+  --color-eu-chip-fg: #6b4a00;
+
   /* --- 本文フォント（Web フォント Inter 導入は別タスク。docs/DESIGN.md 参照） --- */
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,

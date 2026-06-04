@@ -33,32 +33,32 @@ export function UnsubscribeButton({ token }: Props) {
 
   if (state === 'done') {
     return (
-      <div className="bg-muted rounded-xl py-6 px-4 text-center">
-        <div className="text-sm font-medium text-fg-soft mb-1">登録を解除しました</div>
-        <div className="text-xs text-fg-soft">解除完了メールをお送りしました。</div>
+      <div className="eu-neo-sm bg-eu-surface rounded-2xl py-6 px-4 text-center">
+        <div className="eu-head text-sm text-eu-fg mb-1">登録を解除しました</div>
+        <div className="eu-body text-xs text-eu-fg-soft">解除完了メールをお送りしました。</div>
       </div>
     )
   }
 
   if (state === 'confirming') {
     return (
-      <div className="bg-warning-soft border border-warning rounded-xl p-4">
-        <div className="text-sm font-medium text-fg mb-2">本当に解除しますか？</div>
-        <div className="text-xs text-fg-soft mb-4">
+      <div className="eu-neo-sm bg-eu-chip-bg rounded-2xl p-4">
+        <div className="eu-head text-sm text-eu-fg mb-2">本当に解除しますか？</div>
+        <div className="eu-body text-xs text-eu-fg-soft mb-4">
           解除すると順位情報は削除され、リリース時の通知も受け取れなくなります。
         </div>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => setState('idle')}
-            className="flex-1 px-4 py-2 text-sm border border-line-strong rounded-lg hover:bg-muted"
+            className="eu-btn bg-eu-card text-eu-fg flex-1 rounded-xl py-2 text-sm"
           >
             キャンセル
           </button>
           <button
             type="button"
             onClick={execute}
-            className="flex-1 px-4 py-2 text-sm bg-danger text-on-danger rounded-lg hover:opacity-90"
+            className="eu-btn bg-eu-accent text-eu-on-primary flex-1 rounded-xl py-2 text-sm"
           >
             解除する
           </button>
@@ -68,17 +68,17 @@ export function UnsubscribeButton({ token }: Props) {
   }
 
   if (state === 'submitting') {
-    return <div className="text-center text-sm text-fg-soft py-3">解除中...</div>
+    return <div className="eu-body text-center text-sm text-eu-fg-soft py-3">解除中...</div>
   }
 
   if (state === 'error') {
     return (
       <div className="text-center">
-        <div className="text-sm text-danger mb-2">{errorMessage}</div>
+        <div className="eu-body text-sm text-eu-accent mb-2">{errorMessage}</div>
         <button
           type="button"
           onClick={() => setState('idle')}
-          className="text-xs text-fg-soft underline"
+          className="eu-code text-xs text-eu-fg-soft underline"
         >
           戻る
         </button>
@@ -90,7 +90,7 @@ export function UnsubscribeButton({ token }: Props) {
     <button
       type="button"
       onClick={() => setState('confirming')}
-      className="w-full text-sm text-fg-soft hover:text-danger underline py-2"
+      className="eu-body w-full text-sm text-eu-fg-faint hover:text-eu-accent underline py-2"
     >
       登録を解除する
     </button>

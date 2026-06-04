@@ -82,14 +82,14 @@ export function RegistrationCta({
 
   if (state === 'pending' || state === 'resent') {
     return (
-      <div className="bg-card rounded-xl p-6 text-center">
+      <div className="eu-neo-sm bg-eu-surface rounded-xl p-6 text-center">
         <div className="text-3xl mb-3">📧</div>
-        <div className="text-sm font-semibold text-fg mb-2">
+        <div className="eu-head text-sm text-eu-fg mb-2">
           {state === 'pending'
             ? '確認メールを送信しました'
             : '確認メールを再送しました'}
         </div>
-        <div className="text-xs text-fg-soft leading-relaxed">
+        <div className="eu-body text-xs text-eu-fg-soft">
           メール内のリンクをクリックして、登録を完了してください。
           <br />
           クリック後、あなたの順位が確定し表示されます。
@@ -100,16 +100,16 @@ export function RegistrationCta({
 
   if (state === 'already') {
     return (
-      <div className="bg-card rounded-xl p-6 text-center">
+      <div className="eu-neo-sm bg-eu-surface rounded-xl p-6 text-center">
         <div className="text-2xl mb-2">✓</div>
-        <div className="text-sm font-semibold text-fg mb-1">
+        <div className="eu-head text-sm text-eu-fg mb-1">
           すでに {projectName} に登録済みです
         </div>
         <div className="mt-3">
-          <span className="text-4xl font-extrabold text-primary">{rank}</span>
-          <span className="text-lg font-semibold text-primary ml-1">番目</span>
+          <span className="eu-display text-4xl text-eu-primary">{rank}</span>
+          <span className="eu-head text-lg text-eu-primary ml-1">番目</span>
         </div>
-        <div className="text-xs text-fg-soft mt-2">
+        <div className="eu-body text-xs text-eu-fg-soft mt-2">
           確認メール内の URL から、いつでも順位を確認できます。
         </div>
       </div>
@@ -128,12 +128,12 @@ export function RegistrationCta({
         placeholder="メールアドレス"
         disabled={state === 'submitting'}
         autoComplete="email"
-        className="w-full px-4 py-3 rounded-lg border border-line-strong focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft disabled:opacity-50 invalid:border-danger"
+        className="eu-input text-sm"
       />
 
       {requireConsent && (
         <>
-          <label className="flex items-center gap-2 text-sm text-fg-soft cursor-pointer select-none">
+          <label className="eu-body flex items-center gap-2 text-sm text-eu-fg-soft cursor-pointer select-none">
             <input
               type="checkbox"
               checked={consent}
@@ -141,14 +141,14 @@ export function RegistrationCta({
                 setConsent(e.target.checked)
                 if (e.target.checked) setConsentError(false)
               }}
-              className="w-4 h-4 accent-primary"
+              className="w-4 h-4 accent-eu-primary"
             />
             <span>
               <a
                 href="/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary hover:underline"
+                className="text-eu-primary hover:underline"
               >
                 プライバシーポリシー
               </a>
@@ -156,7 +156,7 @@ export function RegistrationCta({
             </span>
           </label>
           {consentError && (
-            <div className="text-xs text-danger pl-6">
+            <div className="eu-body text-xs text-eu-accent pl-6">
               プライバシーポリシーへの同意が必要です。
             </div>
           )}
@@ -166,13 +166,13 @@ export function RegistrationCta({
       <button
         type="submit"
         disabled={state === 'submitting'}
-        className="w-full px-4 py-3 bg-primary hover:bg-primary-hover text-on-primary font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="eu-btn bg-eu-primary text-eu-on-primary w-full rounded-xl py-3"
       >
         {state === 'submitting' ? '送信中...' : 'ウェイトリストに登録'}
       </button>
 
       {state === 'error' && (
-        <div className="text-sm text-danger text-center">{errorMessage}</div>
+        <div className="eu-body text-sm text-eu-accent text-center">{errorMessage}</div>
       )}
     </form>
   )

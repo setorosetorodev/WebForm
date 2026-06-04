@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { EuStyle } from '../../eu-style'
 import { RegistrationCta } from './registration-cta'
 
 type ProjectIdeaData = {
@@ -59,18 +60,16 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
   if (!data) notFound()
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-bg to-card">
-      <header className="border-b border-line bg-card/80 backdrop-blur sticky top-0 z-10">
+    <main className="eu min-h-screen bg-eu-bg">
+      <EuStyle />
+      <header className="bg-eu-bg border-b-[3px] border-eu-ink sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <a
-            href="https://launchia.net"
-            className="text-sm font-bold tracking-tight text-fg"
-          >
-            Launchia
+          <a href="https://launchia.net" className="eu-head text-lg text-eu-primary">
+            Launchia<span className="text-eu-accent">.</span>
           </a>
           <a
             href="https://launchia.net"
-            className="text-xs text-fg-soft hover:text-fg"
+            className="eu-body text-xs text-eu-fg-soft hover:text-eu-fg"
           >
             Launchia とは？
           </a>
@@ -79,7 +78,7 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
 
       <article className="max-w-3xl mx-auto px-4 py-12 md:py-16">
         {data.cover_image_url && (
-          <div className="rounded-2xl overflow-hidden bg-muted mb-8 aspect-video">
+          <div className="eu-neo bg-eu-surface rounded-2xl overflow-hidden mb-8 aspect-video">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={data.cover_image_url}
@@ -89,12 +88,10 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
           </div>
         )}
 
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-fg mb-4">
-          {data.name}
-        </h1>
+        <h1 className="eu-display text-3xl md:text-4xl text-eu-fg mb-4">{data.name}</h1>
 
         {data.description && (
-          <div className="text-fg-soft mb-8 whitespace-pre-wrap leading-relaxed">
+          <div className="eu-body text-eu-fg-soft mb-8 whitespace-pre-wrap">
             {data.description}
           </div>
         )}
@@ -104,15 +101,15 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
             href={data.landing_page_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-primary hover:text-primary-hover mb-10"
+            className="eu-code inline-flex items-center gap-1 text-sm text-eu-primary hover:underline mb-10"
           >
             プロジェクトの LP を見る →
           </a>
         )}
 
-        <div className="mt-12 bg-primary-soft rounded-2xl p-6 md:p-8 border border-primary-soft">
-          <h2 className="text-lg font-bold text-fg mb-2">リリースを待ちますか？</h2>
-          <p className="text-sm text-fg-soft mb-6">
+        <div className="eu-neo bg-eu-card rounded-2xl p-6 md:p-8 mt-12">
+          <h2 className="eu-head text-lg text-eu-fg mb-2">リリースを待ちますか？</h2>
+          <p className="eu-body text-sm text-eu-fg-soft mb-6">
             ウェイトリストに登録すると、リリース時に通知が届きます。
           </p>
           <RegistrationCta
@@ -123,10 +120,10 @@ export default async function IdeaPage(props: PageProps<'/p/[slug]'>) {
         </div>
       </article>
 
-      <footer className="border-t border-line mt-16">
-        <div className="max-w-3xl mx-auto px-4 py-8 flex items-center justify-between text-xs text-fg-faint">
+      <footer className="bg-eu-surface border-t-[3px] border-eu-ink mt-16">
+        <div className="max-w-3xl mx-auto px-4 py-8 flex items-center justify-between eu-code text-xs text-eu-fg-faint">
           <div>Powered by Launchia</div>
-          <a href="/privacy" className="hover:text-fg-soft">
+          <a href="/privacy" className="hover:text-eu-fg-soft">
             プライバシーポリシー
           </a>
         </div>

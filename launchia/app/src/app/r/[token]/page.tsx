@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { EuStyle } from '../../eu-style'
 import { UnsubscribeButton } from './unsubscribe-button'
 
 export const metadata: Metadata = {
@@ -33,42 +34,52 @@ export default async function RankCheckPage(props: PageProps<'/r/[token]'>) {
   const data = await fetchRank(token)
   if (!data) notFound()
 
+  const total = Math.max(data.total_count, data.rank, 1)
+  const aheadPct = Math.max(1, Math.round((data.rank / total) * 100)) // 上位 X%
+  const fill = Math.max(4, Math.round((1 - (data.rank - 1) / total) * 100)) // 前方ほど満ちる
+
   return (
-    <main className="min-h-screen bg-bg flex items-center justify-center p-4">
-      <div className="bg-card rounded-2xl shadow-lg max-w-md w-full p-8">
-        {data.just_confirmed && (
-          <div className="bg-success-soft border border-success rounded-lg p-4 mb-6 text-center">
-            <div className="text-2xl mb-1">🎉</div>
-            <div className="text-sm font-bold text-success">登録が完了しました！</div>
-            <div className="text-xs text-success mt-1">
-              ウェイトリストへの参加が確定しました。
-            </div>
+    <main className="eu min-h-screen bg-eu-bg flex items-center justify-center p-4">
+      <EuStyle />
+      <div className="w-full max-w-md">
+        {/* 順位リビールカード（登録者の最重要モーメント） */}
+        <div className="eu-neo bg-eu-card rounded-3xl p-7 md:p-8 text-center">
+          {data.just_confirmed && (
+            <span className="eu-neo-sm eu-head bg-eu-chip-bg text-eu-chip-fg inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm">
+              🎉 登録完了！
+            </span>
+          )}
+          <div className={`eu-head text-sm text-eu-fg-soft ${data.just_confirmed ? 'mt-5' : ''}`}>
+            あなたは現在
           </div>
-        )}
-
-        <div className="text-sm font-semibold text-fg-soft">{data.project_name}</div>
-        <div className="text-xs text-fg-faint mt-1 mb-6">ウェイトリストの順位確認</div>
-
-        <div className="bg-primary-soft rounded-xl py-8 px-4 text-center mb-6">
-          <div className="text-xs text-fg-soft mb-2">現在の順位</div>
-          <div>
-            <span className="text-6xl font-extrabold text-primary">{data.rank}</span>
-            <span className="text-2xl font-semibold text-primary ml-1">番目</span>
+          <div className="eu-display my-1 text-eu-primary" style={{ fontSize: '72px' }}>
+            {data.rank.toLocaleString('ja-JP')}
+            <span className="text-eu-fg" style={{ fontSize: '26px' }}> 番目</span>
           </div>
-          <div className="text-xs text-fg-soft mt-3">総登録者 {data.total_count} 人中</div>
+          <div className="eu-head text-eu-fg">{data.project_name} のウェイトリスト</div>
+
+          {/* 立ち位置バー（前方ほど満ちる） */}
+          <div className="eu-neo-sm bg-eu-surface mt-6 h-4 w-full rounded-full overflow-hidden">
+            <div className="h-full bg-eu-primary-strong" style={{ width: `${fill}%` }} />
+          </div>
+          <div className="eu-code text-xs mt-2 text-eu-fg-faint">
+            総勢 {data.total_count.toLocaleString('ja-JP')} 人中・上位 {aheadPct}%
+          </div>
+
+          <p className="eu-body text-sm text-eu-fg-soft mt-6">
+            リリースまでもう少しお待ちください。
+            <br />
+            このページはいつでも順位を確認できます。
+          </p>
         </div>
 
-        <p className="text-sm text-fg-soft text-center mb-8 leading-relaxed">
-          リリースまでもう少しお待ちください。
-          <br />
-          このページは何度でも確認できます。
-        </p>
+        <div className="mt-5">
+          <UnsubscribeButton token={token} />
+        </div>
 
-        <UnsubscribeButton token={token} />
-
-        <div className="text-xs text-fg-faint text-center mt-8">
+        <div className="eu-code text-xs text-center mt-6 text-eu-fg-faint">
           このページは{' '}
-          <a href="https://launchia.net" className="text-fg-soft hover:underline">
+          <a href="https://launchia.net" className="underline hover:text-eu-fg-soft">
             Launchia
           </a>{' '}
           が提供しています

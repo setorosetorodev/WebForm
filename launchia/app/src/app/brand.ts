@@ -47,3 +47,33 @@ export const NEO_CSS = BRAND_WORDMARK_CSS + `
 .neo-input::placeholder { color:var(--color-neo-fg-faint); }
 .neo-input:disabled { opacity:.5; }
 `
+
+/**
+ * エンドユーザー（登録者）neo の共有 authored CSS の【単一ソース】= Mango Pop。
+ * 開発者 neo(NEO_CSS) と同じ様式（極太枠・ハード影・押し込みボタン）だが、
+ * 色は globals.css の `--color-eu-*`（暖色）を参照する別系統。
+ * - hex はここに置かない（globals.css のトークンを参照）。
+ * - 読み込みは `<EuStyle/>`（src/app/eu-style.tsx）が フォント＋この CSS をまとめて inject。
+ * 対象: /p（アイデアページ）・/r（順位ページ）。
+ */
+export const EU_CSS = `
+.eu { font-family:'Geist',sans-serif; color:var(--color-eu-fg); }
+/* --- タイポ --- */
+.eu-display { font-family:'Lexend',sans-serif; font-weight:800; letter-spacing:-0.02em; line-height:1; }
+.eu-head { font-family:'Lexend',sans-serif; font-weight:700; line-height:1.3; }
+.eu-body { font-family:'Geist',sans-serif; font-weight:400; line-height:1.6; }
+.eu-code { font-family:'JetBrains Mono',monospace; font-weight:500; }
+/* --- 枠（極太）／カード --- */
+.eu-neo { border:3px solid var(--color-eu-ink); box-shadow:6px 6px 0 0 var(--color-eu-ink); }
+.eu-neo-sm { border:2px solid var(--color-eu-ink); box-shadow:3px 3px 0 0 var(--color-eu-ink); }
+/* --- ボタン：ハード影＋押し込み（色は bg-eu-* / text-eu-* を併用） --- */
+.eu-btn { font-family:'Lexend',sans-serif; font-weight:700; border:3px solid var(--color-eu-ink); box-shadow:4px 4px 0 0 var(--color-eu-ink); transition:transform .12s ease, box-shadow .12s ease; cursor:pointer; }
+.eu-btn:hover:not(:disabled) { transform:translate(-2px,-2px); box-shadow:6px 6px 0 0 var(--color-eu-ink); }
+.eu-btn:active:not(:disabled) { transform:translate(0,0); box-shadow:0 0 0 0 var(--color-eu-ink); }
+.eu-btn:disabled { opacity:.5; cursor:not-allowed; box-shadow:4px 4px 0 0 var(--color-eu-ink); transform:none; }
+/* --- 入力：太枠＋フォーカスでハード影 --- */
+.eu-input { font-family:'Geist',sans-serif; width:100%; padding:0.75rem 1rem; border:3px solid var(--color-eu-ink); border-radius:0.75rem; background:var(--color-eu-card); color:var(--color-eu-fg); outline:none; transition:box-shadow .12s ease; }
+.eu-input:focus { box-shadow:4px 4px 0 0 var(--color-eu-primary); }
+.eu-input::placeholder { color:var(--color-eu-fg-faint); }
+.eu-input:disabled { opacity:.5; }
+`
