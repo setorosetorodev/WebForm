@@ -68,6 +68,56 @@ function neoMailShell(opts: { title: string; heading: string; bodyHtml: string }
 </html>`
 }
 
+// ── エンドユーザー向けメールの neo ブランド = Mango Pop ───────────────
+// DESIGN.md: エンドユーザー系（/p・/r・widget）は Mango Pop（暖色 neo）。メールも同系統に寄せる。
+// 値は globals.css の --color-eu-* と一致（メールは CSS 変数/Web フォント/影が不確実なので inline hex）。
+const EU_MAIL = {
+  bg: '#fffaef',
+  card: '#ffffff',
+  surface: '#fff0d0',
+  ink: '#2a1c00',
+  fg: '#2a1c00',
+  fgSoft: '#6b5320',
+  fgFaint: '#9c854f',
+  primary: '#ff7a00',
+  accent: '#ff2e63',
+  chipBg: '#ffe8b0',
+  chipFg: '#6b4a00',
+}
+
+function euMailWordmark(): string {
+  return `<span style="font-family:'Lexend',Arial,sans-serif;font-weight:800;font-size:22px;letter-spacing:-0.04em;color:${EU_MAIL.primary};">Launchia<span style="color:${EU_MAIL.accent};">.</span></span>`
+}
+
+function euMailButton(href: string, label: string): string {
+  return `<a href="${href}" style="display:inline-block;background:${EU_MAIL.primary};color:#ffffff;font-family:'Lexend',Arial,sans-serif;font-weight:700;font-size:16px;text-decoration:none;padding:14px 28px;border:3px solid ${EU_MAIL.ink};border-radius:12px;box-shadow:4px 4px 0 0 ${EU_MAIL.ink};">${label}</a>`
+}
+
+function euMailShell(opts: { title: string; heading: string; bodyHtml: string }): string {
+  return `<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${escapeHtml(opts.title)}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0;padding:0;background:${EU_MAIL.bg};">
+<div style="max-width:560px;margin:0 auto;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:${EU_MAIL.fg};line-height:1.6;">
+  <div style="margin-bottom:24px;">${euMailWordmark()}</div>
+  <div style="background:${EU_MAIL.card};border:3px solid ${EU_MAIL.ink};border-radius:16px;box-shadow:6px 6px 0 0 ${EU_MAIL.ink};padding:28px 24px;">
+    <h1 style="font-family:'Lexend',Arial,sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.01em;margin:0 0 16px;color:${EU_MAIL.fg};">${escapeHtml(opts.heading)}</h1>
+    ${opts.bodyHtml}
+  </div>
+  <p style="color:${EU_MAIL.fgFaint};font-size:12px;margin-top:20px;text-align:center;">
+    このメールは <a href="https://launchia.net" style="color:${EU_MAIL.fgFaint};">Launchia</a> からお送りしています。
+  </p>
+</div>
+</body>
+</html>`
+}
+
 type WaitlistConfirmationParams = {
   to: string
   projectName: string
@@ -333,37 +383,17 @@ function renderConfirmationText(params: WaitlistConfirmationParams): string {
 function renderConfirmationHtml(params: WaitlistConfirmationParams): string {
   const project = escapeHtml(params.projectName)
   const url = escapeAttr(params.rankCheckUrl)
-  return `<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>${project} のウェイトリスト登録の確認</title>
-</head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; line-height: 1.6; color: #1f2937; max-width: 560px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 1.25rem; margin-bottom: 16px;">登録の確認をお願いします</h1>
-  <p><strong>${project}</strong> のウェイトリストへの登録ありがとうございます。</p>
-  <p>登録を完了するには、下記のボタンをクリックしてください。クリック後、あなたの順位を確認できます。</p>
-
-  <p style="margin: 24px 0; text-align: center;">
-    <a href="${url}" style="background: #3b82f6; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; display: inline-block; font-weight: 600;">
-      登録を完了する
-    </a>
-  </p>
-
-  <p style="color: #6b7280; font-size: 0.875rem; padding: 12px; background: #fef3c7; border-radius: 6px;">
-    ※ このリンクをクリックしない場合、登録は完了しません。順位にも算入されません。
-  </p>
-
-  <p style="color: #6b7280; font-size: 0.875rem; margin-top: 16px;">
-    もしこの登録に心当たりがない場合は、このメールを無視してください。
-  </p>
-
-  <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;">
-  <p style="color: #6b7280; font-size: 0.75rem;">
-    このメールは <a href="https://launchia.net" style="color: #6b7280;">Launchia</a> からお送りしています。
-  </p>
-</body>
-</html>`
+  return euMailShell({
+    title: `${params.projectName} のウェイトリスト登録の確認`,
+    heading: '登録の確認をお願いします',
+    bodyHtml: `
+      <p style="margin:0 0 16px;color:${EU_MAIL.fgSoft};"><strong style="color:${EU_MAIL.fg};">${project}</strong> のウェイトリストへのご登録ありがとうございます。</p>
+      <p style="margin:0 0 20px;color:${EU_MAIL.fgSoft};">下のボタンから登録を完了してください。クリック後、あなたの順位が表示されます。</p>
+      <p style="margin:0 0 20px;text-align:center;">${euMailButton(url, '登録を完了する')}</p>
+      <p style="margin:0;color:${EU_MAIL.chipFg};background:${EU_MAIL.chipBg};border:2px solid ${EU_MAIL.ink};border-radius:10px;padding:12px 14px;font-size:13px;">※ このリンクをクリックしない場合、登録は完了せず、順位にも算入されません。</p>
+      <p style="margin:16px 0 0;color:${EU_MAIL.fgFaint};font-size:13px;">心当たりがない場合は、このメールを無視してください。</p>
+    `,
+  })
 }
 
 function renderConfirmedText(params: WaitlistConfirmedParams): string {
@@ -392,45 +422,23 @@ function renderConfirmedText(params: WaitlistConfirmedParams): string {
 function renderConfirmedHtml(params: WaitlistConfirmedParams): string {
   const project = escapeHtml(params.projectName)
   const url = escapeAttr(params.rankCheckUrl)
-  return `<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>${project} のウェイトリスト登録完了</title>
-</head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; line-height: 1.6; color: #1f2937; max-width: 560px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 1.25rem; margin-bottom: 16px;">🎉 登録が完了しました</h1>
-  <p><strong>${project}</strong> のウェイトリストへの登録が完了しました。</p>
-
-  <div style="background: #f3f4f6; padding: 24px; border-radius: 8px; text-align: center; margin: 24px 0;">
-    <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 8px;">あなたの順位</div>
-    <div style="font-size: 2.5rem; font-weight: 700; color: #3b82f6;">${params.rank} 番目</div>
-  </div>
-
-  <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 16px; margin: 24px 0;">
-    <p style="margin: 0 0 8px; font-weight: 700; color: #92400e;">⚠️ このメールは大切に保管してください</p>
-    <p style="margin: 0; font-size: 0.875rem; color: #92400e;">
-      下記はあなた専用のリンクです。今後の<strong>順位確認・登録解除</strong>はこのリンクから行えます。
-      メールを削除すると順位を確認できなくなりますので、保管をおすすめします。
-    </p>
-  </div>
-
-  <p style="margin: 24px 0; text-align: center;">
-    <a href="${url}" style="background: #3b82f6; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; display: inline-block; font-weight: 600;">
-      順位を確認する
-    </a>
-  </p>
-
-  <p style="color: #6b7280; font-size: 0.875rem;">
-    リリースの際は、ご登録のメールアドレスにご連絡します。
-  </p>
-
-  <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;">
-  <p style="color: #6b7280; font-size: 0.75rem;">
-    このメールは <a href="https://launchia.net" style="color: #6b7280;">Launchia</a> からお送りしています。
-  </p>
-</body>
-</html>`
+  return euMailShell({
+    title: `${params.projectName} のウェイトリスト登録完了`,
+    heading: '登録が完了しました 🎉',
+    bodyHtml: `
+      <p style="margin:0 0 16px;color:${EU_MAIL.fgSoft};"><strong style="color:${EU_MAIL.fg};">${project}</strong> のウェイトリストへの登録が完了しました。</p>
+      <div style="text-align:center;margin:20px 0;background:${EU_MAIL.surface};border:3px solid ${EU_MAIL.ink};border-radius:14px;padding:18px;">
+        <div style="color:${EU_MAIL.fgSoft};font-size:13px;margin-bottom:4px;">あなたの順位</div>
+        <div style="font-family:'Lexend',Arial,sans-serif;font-weight:800;font-size:44px;line-height:1;color:${EU_MAIL.primary};">${params.rank}<span style="font-size:18px;color:${EU_MAIL.fg};"> 番目</span></div>
+      </div>
+      <div style="background:${EU_MAIL.chipBg};border:2px solid ${EU_MAIL.ink};border-radius:10px;padding:12px 14px;margin:0 0 20px;">
+        <p style="margin:0 0 6px;font-weight:700;color:${EU_MAIL.chipFg};font-family:'Lexend',Arial,sans-serif;">⚠️ このメールは大切に保管してください</p>
+        <p style="margin:0;font-size:13px;color:${EU_MAIL.chipFg};">下のボタン/リンクから、いつでも<strong>順位確認・登録解除</strong>ができます。メールを削除すると順位を確認できなくなります。</p>
+      </div>
+      <p style="margin:0 0 16px;text-align:center;">${euMailButton(url, '順位を確認する')}</p>
+      <p style="margin:0;color:${EU_MAIL.fgSoft};font-size:13px;">リリースの際は、ご登録のメールアドレスにご連絡します。</p>
+    `,
+  })
 }
 
 function renderUnsubscribedText(params: UnsubscribedParams): string {
@@ -448,24 +456,15 @@ function renderUnsubscribedText(params: UnsubscribedParams): string {
 
 function renderUnsubscribedHtml(params: UnsubscribedParams): string {
   const project = escapeHtml(params.projectName)
-  return `<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>${project} のウェイトリスト登録解除</title>
-</head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; line-height: 1.6; color: #1f2937; max-width: 560px; margin: 0 auto; padding: 24px;">
-  <h1 style="font-size: 1.25rem; margin-bottom: 16px;">登録解除のお知らせ</h1>
-  <p><strong>${project}</strong> のウェイトリストから登録を解除しました。</p>
-  <p style="color: #6b7280;">今後 ${project} に関するメールはお送りいたしません。</p>
-  <p>もし誤って解除してしまった場合は、再度ウェイトリスト登録ページから登録してください。</p>
-
-  <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 32px 0;">
-  <p style="color: #6b7280; font-size: 0.75rem;">
-    このメールは <a href="https://launchia.net" style="color: #6b7280;">Launchia</a> からお送りしています。
-  </p>
-</body>
-</html>`
+  return euMailShell({
+    title: `${params.projectName} のウェイトリスト登録解除`,
+    heading: '登録解除のお知らせ',
+    bodyHtml: `
+      <p style="margin:0 0 14px;color:${EU_MAIL.fgSoft};"><strong style="color:${EU_MAIL.fg};">${project}</strong> のウェイトリストから登録を解除しました。</p>
+      <p style="margin:0 0 14px;color:${EU_MAIL.fgSoft};">今後 ${project} に関するメールはお送りいたしません。</p>
+      <p style="margin:0;color:${EU_MAIL.fgSoft};">もし誤って解除した場合は、再度ウェイトリスト登録ページからご登録ください。</p>
+    `,
+  })
 }
 
 function renderMagicLinkText(params: MagicLinkParams): string {
