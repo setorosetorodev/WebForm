@@ -39,8 +39,10 @@
 - M1–M7 実装・デプロイ済み、メール認証（SPF/DKIM/DMARC pass）、本番 DB clean state、
   M9 ドッグフーディング（本番で だすね作成 → ウェイトリスト登録 E2E 確認）まで完了。
 - **2026-06-03**: 開発者画面を **neo に統一**（単一ソース `globals.css` の `--color-neo-*` ＋ `app/src/app/brand.ts` の `NEO_CSS`／`<NeoStyle/>` で読込。login / projects(new/詳細/entries) / apply / 運営 invites が参照）。
-  **招待コード申請フロー＋運営管理画面**を実装（`/apply` 公開申請 → `/projects/invites` で承認/却下/コード割当・発行・上限±1・論理削除/復元・メモ編集・集計サマリー）。ログインメールも neo 化。
-  **※ まだ未デプロイ**。本番反映時は Worker に `ADMIN_EMAILS`/`INVITE_NOTIFY_TO` 設定＋deploy（テーブル `invite_requests` と `invite_codes.deleted_at` は prod Neon に適用済み）。
+  **招待コード申請フロー＋運営管理画面**を実装（`/apply` 公開申請 → `/projects/invites` で承認/却下/コード割当・発行・上限±1・論理削除/復元・メモ編集・集計サマリー）。ログインメールも neo 化。運営者識別は DB（`users.is_admin`）。
+  - **2026-06-04 本番反映済み**（app＋api 両方デプロイ。invites/ダッシュボード/neo メール 稼働確認）。`invite_requests`・`invite_codes.deleted_at`・`users.is_admin` は prod Neon 適用済み、運営者 `setorosetorodev@gmail.com` を `is_admin=true` に設定済み。
+  - **⚠️ デプロイの落とし穴**: `git push master` で **app（OpenNext）は自動再ビルドされるが api(Worker) は取り残される**ことがある。api を変更したら必ず `cd launchia/api && npx wrangler deploy`（top-level と `[env.production]` は同名 `launchia-api` ＝同一 Worker。secret は Worker に永続）。app/api の契約ズレ（例: 旧 api が per-project `stats` を返さず dashboard が 500）に注意。
+  - 未了: prod Worker secret `INVITE_NOTIFY_TO`（申請通知先。未設定でも通知が飛ばないだけ）。
   ※ 別ブランチ `design/enduser-palettes` にエンドユーザー向け暖色配色の見本（`/preview/enduser-palettes`・5案）を探索中（未確定・未マージ）。
 
 ### 次にやること = **Phase 2**
@@ -49,7 +51,8 @@
 2. **OTP コードログイン**（Magic Link のブラウザ跨ぎ/プリフェッチ問題を解決）
 3. **セッション管理画面**（要 stateful `launchia_sessions` テーブル）
 4. 登録解除の**二段階確認**
-5. **レート制限 + Cloudflare Turnstile**
+5. **レート制限 + Cloudflare Turnstile**（招待コードのブルートフォース対策にも。現状コードは 32⁸≈1.1兆・CSPRNG で実質推測不可だが、`/auth/magic-link` にアプリ側レート制限が無い）
+6. **アカウント無効化 `users.disabled_at`**（漏れたコードで入った不正ユーザーを弾く。`requireAuth` は毎回 DB を引くので、列追加＋判定＋invites に「無効化」ボタンで即ログアウト化できる。コード自体は invites の論理削除で追加流入を止められるが、既存アカウントは別途無効化が要る）
 
 その他の小タスク:
 - ~~DMARC を数日後 `p=none`→`p=quarantine` に引き上げ。~~ → **2026-06-03 完了**（権威/公開とも反映確認。次に上げるなら `p=reject`）。
