@@ -26,6 +26,11 @@
   - `.dev.vars` / `.env` は gitignore 済み（秘密情報をコミットしないこと）。
   - 運営者: `ADMIN_EMAILS`（カンマ区切り。管理画面 `/projects/invites` のアクセス制御＋既定の通知先）／`INVITE_NOTIFY_TO`（申請通知の宛先。例 `support@launchia.net`）。**本番は Cloudflare Worker Secret に設定要**（`.dev.vars` には設定済み）。
 
+## 役割（用語）
+- **エンドユーザ (EU)**: ウェイトリスト登録者。アカウント無し（`waitlist_entries`）。
+- **開発者**: プロジェクト所有者。**1 Project = 1 開発者**（`projects.owner_user_id`）。共同開発者は将来。
+- **システム管理者**: 開発者の全権＋開発者BAN等の上位権限。現在1人 = `setorosetorodev@gmail.com`（`users.is_admin`。`setorosetorosetoro@gmail.com` と同一人物）。
+
 ## データモデル（`launchia_*` 8テーブル）
 `users` / `magic_link_tokens` / `invite_codes` / `invite_requests` / `projects` / `waitlist_entries` / `rank_tokens` / `rank_views`
 - 認証: パスワードレス Magic Link（15分・複数クリック可）+ 30日の HMAC 署名ステートレス Cookie `launchia_session`。
@@ -56,6 +61,7 @@
 4. 登録解除の**二段階確認**
 5. **レート制限 + Cloudflare Turnstile**（招待コードのブルートフォース対策にも。現状コードは 32⁸≈1.1兆・CSPRNG で実質推測不可だが、`/auth/magic-link` にアプリ側レート制限が無い）
 6. **アカウント無効化 `users.disabled_at`**（漏れたコードで入った不正ユーザーを弾く。`requireAuth` は毎回 DB を引くので、列追加＋判定＋invites に「無効化」ボタンで即ログアウト化できる。コード自体は invites の論理削除で追加流入を止められるが、既存アカウントは別途無効化が要る）
+7. **異常系リカバリ（運用再処理）＋ 操作ログ**（2026-06-05 **要件確定**。`docs/20260605_launchia_ops_recovery_requirements.md` が正）。EU 駆動でしか起きない操作（①確認メール再送・②順位リンク再発行）を開発者/管理者が代行できない穴＝**リリースゲート**。**(a) 自己宛の再送/再発行は解禁**（owner スコープ・既存 `reissueRankToken` 流用）、**(b) `confirmed_at` 等の代理確定は禁止**（同意偽装）。新テーブル `launchia_admin_actions`（管理操作すべてを記録・宛先は可逆暗号化=ポリシーβ・`AUDIT_ENC_KEY`）＋ 再送 per-entry クールダウン。③Magic Link 再送はスコープ外（→2 OTP）。実装は P1〜P5 に分割（同doc §7）。**要件doc・docs整理まで完了、実装は未着手**。
 
 その他の小タスク:
 - ~~DMARC を数日後 `p=none`→`p=quarantine` に引き上げ。~~ → **2026-06-03 完了**（権威/公開とも反映確認。次に上げるなら `p=reject`）。
@@ -66,6 +72,7 @@
 - `docs/20260527_launchia_Project.md` … PRD（全体像・ロードマップ）
 - `docs/20260528_launchia_phase1_mvp_requirements.md` … Phase 1 詳細要件（データモデル/API/UI 仕様の正）
 - `docs/20260529_launchia_phase2_design_notes.md` … **Phase 2 設計検討（次の着手先）**
+- `docs/20260605_launchia_ops_recovery_requirements.md` … **異常系リカバリ（運用再処理）＋操作ログ の要件の正**（Phase2 項目7。実装の着手元）
 - `docs/20260530_launchia_dns_email_db_ops.md` … **運用メモ: DNS/メール認証/DB リセットの手順と落とし穴**
 - `docs/20260528_launchia_user_stories.md` / `docs/USAGE.md` ほか
 
