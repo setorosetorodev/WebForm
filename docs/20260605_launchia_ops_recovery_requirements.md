@@ -127,6 +127,7 @@ PII は 2 か所にある:
 
 **採用 = β（監査優先）**: 宛先を **AES-256-GCM の可逆暗号化**で `target_email_enc` に保存する。
 - 暗号は Web Crypto（`crypto.subtle`、Cloudflare Workers 標準）。形式は `iv(12B) ‖ ciphertext+tag`。
+  - **保存型は `text`（base64）に変更**（当初案 bytea）。neon-http は bytea の**読み戻し**が曖昧で、暗号文を JS で復号する本用途に不向きなため、決定的な base64 TEXT にした（2026-06-05 実装時の判断）。
 - 鍵 `AUDIT_ENC_KEY`（32 バイトを base64 化）は **Worker Secret**（dev は `.dev.vars`）。コミット禁止。
 - **既定はマスク表示**（例 `s***v@g***l.c*m`）。**システム管理者の明示操作でのみ復号表示**する。
 - **トレードオフ（明示）**: 削除しても監査ログには復号可能な形で残るため、**「忘れられる権利」の消去保証は弱まる**。

@@ -12,6 +12,9 @@ type Entry = {
   createdAt: string
 }
 
+type Pending = null | 'resend' | 'reissue' | 'delete'
+type Msg = { kind: 'ok' | 'err'; text: string } | null
+
 export function EntryRow({
   entry,
   projectId,
@@ -20,22 +23,55 @@ export function EntryRow({
   projectId: string
 }) {
   const router = useRouter()
-  const [pending, setPending] = useState(false)
+  const [pending, setPending] = useState<Pending>(null)
+  const [msg, setMsg] = useState<Msg>(null)
 
   async function remove() {
     if (!confirm(`${entry.email} を削除しますか？`)) return
-    setPending(true)
+    setPending('delete')
+    setMsg(null)
     const res = await fetch(`/api/v1/admin/projects/${projectId}/entries/${entry.id}`, {
       method: 'DELETE',
     })
     if (res.ok) router.refresh()
-    else setPending(false)
+    else {
+      setPending(null)
+      setMsg({ kind: 'err', text: '削除に失敗しました' })
+    }
+  }
+
+  // 確認メール再送（未確認）/ 順位リンク再発行（確認済み）。どちらも宛先メールへ再送する。
+  async function reprocess(kind: 'resend' | 'reissue') {
+    const label = kind === 'resend' ? '確認メールを再送' : '順位リンクを再発行'
+    if (!confirm(`${entry.email} に${label}しますか？\n（これまでのリンクは無効になります）`)) return
+    setPending(kind)
+    setMsg(null)
+    const action = kind === 'resend' ? 'resend-confirmation' : 'reissue-rank-link'
+    const res = await fetch(
+      `/api/v1/admin/projects/${projectId}/entries/${entry.id}/${action}`,
+      { method: 'POST' },
+    )
+    setPending(null)
+    if (res.ok) {
+      setMsg({
+        kind: 'ok',
+        text: kind === 'resend' ? '確認メールを再送しました' : '順位リンクを再発行しました',
+      })
+      router.refresh()
+    } else if (res.status === 429) {
+      setMsg({ kind: 'err', text: '少し時間をおいて再試行してください' })
+    } else if (res.status === 502) {
+      setMsg({ kind: 'err', text: 'メール送信に失敗しました' })
+    } else {
+      setMsg({ kind: 'err', text: '処理に失敗しました' })
+    }
   }
 
   const dt = new Date(entry.createdAt).toLocaleString('ja-JP', {
     dateStyle: 'short',
     timeStyle: 'short',
   })
+  const busy = pending !== null
 
   return (
     <tr className="border-t-2 border-neo-track hover:bg-neo-surface">
@@ -55,14 +91,44 @@ export function EntryRow({
       </td>
       <td className="px-4 py-3 neo-code text-xs text-neo-fg-soft">{dt}</td>
       <td className="px-4 py-3 text-right">
-        <button
-          type="button"
-          onClick={remove}
-          disabled={pending}
-          className="neo-code text-xs text-neo-danger hover:underline disabled:opacity-50"
-        >
-          削除
-        </button>
+        <div className="flex flex-col items-end gap-1">
+          <div className="flex gap-3 justify-end">
+            {entry.confirmedAt ? (
+              <button
+                type="button"
+                onClick={() => reprocess('reissue')}
+                disabled={busy}
+                className="neo-code text-xs text-neo-primary hover:underline disabled:opacity-50"
+              >
+                {pending === 'reissue' ? '送信中…' : '順位リンク再発行'}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => reprocess('resend')}
+                disabled={busy}
+                className="neo-code text-xs text-neo-primary hover:underline disabled:opacity-50"
+              >
+                {pending === 'resend' ? '送信中…' : '確認メール再送'}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={remove}
+              disabled={busy}
+              className="neo-code text-xs text-neo-danger hover:underline disabled:opacity-50"
+            >
+              削除
+            </button>
+          </div>
+          {msg && (
+            <span
+              className={`neo-code text-xs ${msg.kind === 'ok' ? 'text-neo-green' : 'text-neo-danger'}`}
+            >
+              {msg.text}
+            </span>
+          )}
+        </div>
       </td>
     </tr>
   )

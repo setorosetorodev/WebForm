@@ -157,7 +157,15 @@ export default async function InvitesAdminPage() {
         ← 自分の開発ダッシュボードへ
       </Link>
 
-      <h1 className="neo-display text-3xl text-neo-fg mb-4">招待管理 🎟️</h1>
+      <div className="flex items-center justify-between mb-4 gap-3">
+        <h1 className="neo-display text-3xl text-neo-fg">招待管理 🎟️</h1>
+        <Link
+          href="/projects/audit-log"
+          className="neo-code text-sm text-neo-primary hover:underline whitespace-nowrap"
+        >
+          操作ログ 🧾 →
+        </Link>
+      </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-8">
         <Stat label="申請総数" value={requests.length} />

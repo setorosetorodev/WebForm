@@ -5,6 +5,7 @@ import {
   date,
   index,
   integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
@@ -172,6 +173,38 @@ export const rankViews = pgTable(
   }),
 )
 
+// 管理操作の監査ログ。開発者＋システム管理者の「変更系」操作だけを記録する
+// （EU 公開トラフィック=登録/確認/閲覧 は入れない。詳細は docs/20260605_launchia_ops_recovery_requirements.md）。
+export const adminActions = pgTable(
+  'launchia_admin_actions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    // 誰が（user 削除後も行は残すため set null）
+    actorUserId: uuid('actor_user_id').references(() => users.id, { onDelete: 'set null' }),
+    actorRole: text('actor_role').notNull(), // 'developer' | 'system_admin'
+    action: text('action').notNull(), // 例 'entry.resend_confirmation'
+    projectId: uuid('project_id').references(() => projects.id, { onDelete: 'set null' }),
+    targetType: text('target_type'), // 'entry' | 'invite_code' | 'invite_request' | 'project'
+    targetId: text('target_id'),
+    // 宛先メールの可逆暗号化（AES-256-GCM）。base64( iv ‖ ciphertext+tag ) を TEXT 保存。平文は保存しない。
+    targetEmailEnc: text('target_email_enc'),
+    metadata: jsonb('metadata'), // 任意。平文 PII は入れない
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    projectCreatedAtIdx: index('launchia_admin_actions_project_created_at_idx').on(
+      table.projectId,
+      table.createdAt,
+    ),
+    // R3 クールダウン照会（直近 N 分の同 target への再送有無）
+    targetActionCreatedAtIdx: index('launchia_admin_actions_target_action_created_at_idx').on(
+      table.targetId,
+      table.action,
+      table.createdAt,
+    ),
+  }),
+)
+
 export type User = typeof users.$inferSelect
 export type NewUser = typeof users.$inferInsert
 export type Project = typeof projects.$inferSelect
@@ -188,6 +221,8 @@ export type RankToken = typeof rankTokens.$inferSelect
 export type NewRankToken = typeof rankTokens.$inferInsert
 export type RankView = typeof rankViews.$inferSelect
 export type NewRankView = typeof rankViews.$inferInsert
+export type AdminAction = typeof adminActions.$inferSelect
+export type NewAdminAction = typeof adminActions.$inferInsert
 
 export const schema = {
   users,
@@ -198,4 +233,5 @@ export const schema = {
   waitlistEntries,
   rankTokens,
   rankViews,
+  adminActions,
 }
