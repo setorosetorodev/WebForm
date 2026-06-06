@@ -61,7 +61,7 @@
 4. 登録解除の**二段階確認**
 5. **レート制限 + Cloudflare Turnstile**（招待コードのブルートフォース対策にも。現状コードは 32⁸≈1.1兆・CSPRNG で実質推測不可だが、`/auth/magic-link` にアプリ側レート制限が無い）
 6. **アカウント無効化 `users.disabled_at`**（漏れたコードで入った不正ユーザーを弾く。`requireAuth` は毎回 DB を引くので、列追加＋判定＋invites に「無効化」ボタンで即ログアウト化できる。コード自体は invites の論理削除で追加流入を止められるが、既存アカウントは別途無効化が要る）
-7. **異常系リカバリ（運用再処理）＋ 操作ログ**（2026-06-05 **要件確定**。`docs/20260605_launchia_ops_recovery_requirements.md` が正）。EU 駆動でしか起きない操作（①確認メール再送・②順位リンク再発行）を開発者/管理者が代行できない穴＝**リリースゲート**。**(a) 自己宛の再送/再発行は解禁**（owner スコープ・既存 `reissueRankToken` 流用）、**(b) `confirmed_at` 等の代理確定は禁止**（同意偽装）。新テーブル `launchia_admin_actions`（管理操作すべてを記録・宛先は可逆暗号化=ポリシーβ・`AUDIT_ENC_KEY`）＋ 再送 per-entry クールダウン。③Magic Link 再送はスコープ外（→2 OTP）。実装は P1〜P5 に分割（同doc §7）。**P1〜P5 実装完了・型チェック緑（api+app）。`launchia_admin_actions` は本番適用済み（宛先は base64 TEXT で可逆暗号化＝neon-http の bytea 読み戻し回避）。残: prod Worker Secret `AUDIT_ENC_KEY` 設定＋api デプロイ＋app push（dev/prod は同一 DB なので鍵は共有必須）**。
+7. **異常系リカバリ（運用再処理）＋ 操作ログ**（2026-06-05 **要件確定**。`docs/20260605_launchia_ops_recovery_requirements.md` が正）。EU 駆動でしか起きない操作（①確認メール再送・②順位リンク再発行）を開発者/管理者が代行できない穴＝**リリースゲート**。**(a) 自己宛の再送/再発行は解禁**（owner スコープ・既存 `reissueRankToken` 流用）、**(b) `confirmed_at` 等の代理確定は禁止**（同意偽装）。新テーブル `launchia_admin_actions`（管理操作すべてを記録・宛先は可逆暗号化=ポリシーβ・`AUDIT_ENC_KEY`）＋ 再送 per-entry クールダウン。③Magic Link 再送はスコープ外（→2 OTP）。実装は P1〜P5 に分割（同doc §7）。**P1〜P5 実装・本番デプロイ済み（2026-06-06）**：`launchia_admin_actions` 本番適用、prod Worker Secret `AUDIT_ENC_KEY` 設定、api deploy（ver 43b4b9c4）＋app push 済み。宛先は base64 TEXT で可逆暗号化（neon-http の bytea 読み戻し回避）、暗号 round-trip 検証済み。**鍵 `AUDIT_ENC_KEY` は dev/prod 同一 DB のため共有必須**。残: 実ログインでの E2E 確認のみ。
 
 その他の小タスク:
 - ~~DMARC を数日後 `p=none`→`p=quarantine` に引き上げ。~~ → **2026-06-03 完了**（権威/公開とも反映確認。次に上げるなら `p=reject`）。
