@@ -271,6 +271,8 @@ adminRoutes.delete('/projects/:id/entries/:entryId', async (c) => {
 })
 
 // ── エントリ再処理（自己宛の再送/再発行のみ）。owner スコープ。詳細: docs/20260605_..._ops_recovery_requirements.md ──
+// 注: owner 以外（別開発者）が他人の entry を叩くと findOwnedProjectById が null → 404(project_not_found)。
+//     プロジェクトの存在を漏らさないため、意図的に 403 ではなく 404 に統一している（要件 §4/§8 参照）。
 
 // 共通: rank トークンを再発行し、エントリ状態に応じたメール（リンク入り）を宛先へ送る。送信成否を返す。
 // 未確認 → 「登録の確認をお願いします」、確認済み → 「登録完了（保管してください・順位入り）」。
