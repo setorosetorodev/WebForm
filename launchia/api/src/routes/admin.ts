@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { z } from 'zod'
 import type { Env } from '../env'
 import { createDbClient, type DbClient } from '../db/client'
+import type { WaitlistEntry } from '../db/schema'
 import { requireAdmin, requireAuth } from '../middleware/auth'
 import {
   createProjectForOwner,
@@ -11,6 +12,7 @@ import {
 } from '../repositories/projects'
 import {
   findActiveEntryById,
+  getActiveRank,
   getEntryCounts,
   listEntriesForProject,
   softDeleteEntry,
@@ -47,6 +49,7 @@ import {
   sendInviteCodeEmail,
   sendInviteRejectedEmail,
   sendWaitlistConfirmationEmail,
+  sendWaitlistConfirmedEmail,
 } from '../lib/email'
 
 const adminRoutes = new Hono<{ Bindings: Env }>()
@@ -269,11 +272,12 @@ adminRoutes.delete('/projects/:id/entries/:entryId', async (c) => {
 
 // ── エントリ再処理（自己宛の再送/再発行のみ）。owner スコープ。詳細: docs/20260605_..._ops_recovery_requirements.md ──
 
-// 共通: rank トークンを再発行し、確認メール（リンク入り）を宛先へ送る。送信成否を返す。
-async function reissueAndSendConfirmation(
+// 共通: rank トークンを再発行し、エントリ状態に応じたメール（リンク入り）を宛先へ送る。送信成否を返す。
+// 未確認 → 「登録の確認をお願いします」、確認済み → 「登録完了（保管してください・順位入り）」。
+async function reissueAndSendEmail(
   db: DbClient,
   env: Env,
-  entry: { id: string; email: string },
+  entry: WaitlistEntry,
   projectName: string,
 ): Promise<boolean> {
   const token = generateToken()
@@ -282,11 +286,23 @@ async function reissueAndSendConfirmation(
   const rankCheckUrl = `${env.APP_BASE_URL}/r/${token}`
   try {
     const emailCtx = createEmailContext(env)
-    await sendWaitlistConfirmationEmail(emailCtx, {
-      to: entry.email,
-      projectName,
-      rankCheckUrl,
-    })
+    if (entry.confirmedAt) {
+      // 確認済み: 順位入りの「登録完了（保管してください）」メール。順位は動的 ROW_NUMBER（public.ts の確認フローと同じ）。
+      const rank = await getActiveRank(db, entry.projectId, entry.id)
+      await sendWaitlistConfirmedEmail(emailCtx, {
+        to: entry.email,
+        projectName,
+        rank: rank ?? entry.position,
+        rankCheckUrl,
+      })
+    } else {
+      // 未確認: ダブルオプトインの「確認をお願いします」メール。
+      await sendWaitlistConfirmationEmail(emailCtx, {
+        to: entry.email,
+        projectName,
+        rankCheckUrl,
+      })
+    }
     return true
   } catch (err) {
     console.error('reprocess email send failed:', err)
@@ -317,7 +333,7 @@ adminRoutes.post('/projects/:id/entries/:entryId/resend-confirmation', async (c)
     return c.json({ error: 'cooldown', retry_after_minutes: RESEND_COOLDOWN_MINUTES }, 429)
   }
 
-  const sent = await reissueAndSendConfirmation(db, c.env, entry, project.name)
+  const sent = await reissueAndSendEmail(db, c.env, entry, project.name)
   if (!sent) return c.json({ error: 'email_send_failed' }, 502)
 
   await audit(db, c.env, {
@@ -355,7 +371,7 @@ adminRoutes.post('/projects/:id/entries/:entryId/reissue-rank-link', async (c) =
     return c.json({ error: 'cooldown', retry_after_minutes: RESEND_COOLDOWN_MINUTES }, 429)
   }
 
-  const sent = await reissueAndSendConfirmation(db, c.env, entry, project.name)
+  const sent = await reissueAndSendEmail(db, c.env, entry, project.name)
   if (!sent) return c.json({ error: 'email_send_failed' }, 502)
 
   await audit(db, c.env, {
