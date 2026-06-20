@@ -56,12 +56,18 @@
 ### 次にやること = **Phase 2**
 着手先は `docs/20260529_launchia_phase2_design_notes.md`。候補（優先順は要相談）:
 1. エンドユーザー**マイページ**（メアド名寄せで全登録・順位を一覧）
-2. **OTP コードログイン**（Magic Link のブラウザ跨ぎ/プリフェッチ問題を解決）
+2. ~~**OTP コードログイン**（Magic Link のブラウザ跨ぎ/プリフェッチ問題を解決）~~ → **2026-06-20 実装完了**（下記）。**未デプロイ**。
 3. **セッション管理画面**（要 stateful `launchia_sessions` テーブル）
 4. 登録解除の**二段階確認**
 5. **レート制限 + Cloudflare Turnstile**（招待コードのブルートフォース対策にも。現状コードは 32⁸≈1.1兆・CSPRNG で実質推測不可だが、`/auth/magic-link` にアプリ側レート制限が無い）
 6. **アカウント無効化 `users.disabled_at`**（漏れたコードで入った不正ユーザーを弾く。`requireAuth` は毎回 DB を引くので、列追加＋判定＋invites に「無効化」ボタンで即ログアウト化できる。コード自体は invites の論理削除で追加流入を止められるが、既存アカウントは別途無効化が要る）
-7. **異常系リカバリ（運用再処理）＋ 操作ログ**（2026-06-05 **要件確定**。`docs/20260605_launchia_ops_recovery_requirements.md` が正）。EU 駆動でしか起きない操作（①確認メール再送・②順位リンク再発行）を開発者/管理者が代行できない穴＝**リリースゲート**。**(a) 自己宛の再送/再発行は解禁**（owner スコープ・既存 `reissueRankToken` 流用）、**(b) `confirmed_at` 等の代理確定は禁止**（同意偽装）。新テーブル `launchia_admin_actions`（管理操作すべてを記録・宛先は可逆暗号化=ポリシーβ・`AUDIT_ENC_KEY`）＋ 再送 per-entry クールダウン。③Magic Link 再送はスコープ外（→2 OTP）。実装は P1〜P5 に分割（同doc §7）。**P1〜P5 実装・本番デプロイ済み（2026-06-06）**：`launchia_admin_actions` 本番適用、prod Worker Secret `AUDIT_ENC_KEY` 設定、api deploy（ver 43b4b9c4）＋app push 済み。宛先は base64 TEXT で可逆暗号化（neon-http の bytea 読み戻し回避）、暗号 round-trip 検証済み。**鍵 `AUDIT_ENC_KEY` は dev/prod 同一 DB のため共有必須**。**2026-06-18**: E2E 準備中に発覚したバグを修正＝「**確認済み**エントリの『順位リンク再発行』が、未確認用の『登録の確認をお願いします』メールを送っていた」→ エントリ状態で出し分け、確認済みは順位入りの『登録完了（保管してください）』メール `sendWaitlistConfirmedEmail` を送る（順位は `getActiveRank`）。api 本番デプロイ済み（ver `46df777a`, commit `d4505a7`）。非owner が他人の entry を再処理した時の返しは **403 ではなく 404（`project_not_found`）に文面統一**（`findOwnedProjectById` が存在/非所有を区別せず null＝存在を漏らさない設計。commit `faac3f6`）。監査ログは本番で正常動作を確認済み（『何も出ない』は操作前だっただけ）。**残: 瀬戸口さん主導の実機 E2E 消化のみ**（特に修正後メールが『登録完了＋順位』になっているか）。次の本命は項目2 **OTP**。
+7. **異常系リカバリ（運用再処理）＋ 操作ログ**（2026-06-05 **要件確定**。`docs/20260605_launchia_ops_recovery_requirements.md` が正）。EU 駆動でしか起きない操作（①確認メール再送・②順位リンク再発行）を開発者/管理者が代行できない穴＝**リリースゲート**。**(a) 自己宛の再送/再発行は解禁**（owner スコープ・既存 `reissueRankToken` 流用）、**(b) `confirmed_at` 等の代理確定は禁止**（同意偽装）。新テーブル `launchia_admin_actions`（管理操作すべてを記録・宛先は可逆暗号化=ポリシーβ・`AUDIT_ENC_KEY`）＋ 再送 per-entry クールダウン。③Magic Link 再送はスコープ外（→2 OTP）。実装は P1〜P5 に分割（同doc §7）。**P1〜P5 実装・本番デプロイ済み（2026-06-06）**：`launchia_admin_actions` 本番適用、prod Worker Secret `AUDIT_ENC_KEY` 設定、api deploy（ver 43b4b9c4）＋app push 済み。宛先は base64 TEXT で可逆暗号化（neon-http の bytea 読み戻し回避）、暗号 round-trip 検証済み。**鍵 `AUDIT_ENC_KEY` は dev/prod 同一 DB のため共有必須**。**2026-06-18**: E2E 準備中に発覚したバグを修正＝「**確認済み**エントリの『順位リンク再発行』が、未確認用の『登録の確認をお願いします』メールを送っていた」→ エントリ状態で出し分け、確認済みは順位入りの『登録完了（保管してください）』メール `sendWaitlistConfirmedEmail` を送る（順位は `getActiveRank`）。api 本番デプロイ済み（ver `46df777a`, commit `d4505a7`）。非owner が他人の entry を再処理した時の返しは **403 ではなく 404（`project_not_found`）に文面統一**（`findOwnedProjectById` が存在/非所有を区別せず null＝存在を漏らさない設計。commit `faac3f6`）。監査ログは本番で正常動作を確認済み（『何も出ない』は操作前だっただけ）。**残: 瀬戸口さん主導の実機 E2E 消化のみ**（特に修正後メールが『登録完了＋順位』になっているか）。
+
+- **2026-06-20**: **OTP コードログイン実装完了（Magic Link を廃止＝コードのみに置き換え）**。Phase2 項目2。詳細は `docs/20260529_..._phase2_design_notes.md` §2「実装（2026-06-20）」が正。
+  - 仕様: **6 桁数字・CSPRNG（剰余バイアス除去）・TTL 10 分・単回使用・5 回失敗でロック（`attempt_count`）**＋ 60 秒再送クールダウン。再送で旧コード失効・最新のみ有効。保存は **HMAC-SHA256(SESSION_SECRET, email+":"+code)**（`token_hash` 流用、列 `attempt_count` 追加マイグレーション＝**本番適用済み**）。
+  - API: `POST /auth/otp/request`・`/auth/otp/verify` に差し替え、旧 `GET /verify`・`POST /magic-link` 撤去。app は login 2 段階 UI 化＋`auth/otp-verify` route（Set-Cookie 中継）、旧 `auth/verify` 削除。
+  - 検証済み: lib+repo の DB 込み網羅テスト全 pass（`scripts/dev-test-otp.ts`）＋ HTTP ゲーティング/verify の status 確認。**残: ① 実機ブラウザ E2E（成功パスのセッション着地・OTP 自動入力）② デプロイ**。
+  - **⚠️ デプロイ順序の罠**: 新 app（OTP UI）と旧 api（magic-link のみ）が混在するとログインが壊れる。**api を先に `wrangler deploy` → 直後に app push**（OpenNext ビルド中の数分はログイン不可の窓ができる。30日セッションなので影響は新規ログインのみ）。`SESSION_SECRET` は既設のため新規 Secret 不要。
 
 その他の小タスク:
 - ~~DMARC を数日後 `p=none`→`p=quarantine` に引き上げ。~~ → **2026-06-03 完了**（権威/公開とも反映確認。次に上げるなら `p=reject`）。
@@ -79,8 +85,8 @@
 ## 運用スクリプト（`launchia/api/scripts/`）
 読み取り系: `check-entries.ts`（直近登録者）/ `show-invites.ts`（招待コード一覧）/ `check-magic-tokens.ts`
 破壊的: `reset-db.ts`（`launchia_*` 全削除＋招待 seed。ガード付き。詳細は運用メモ参照）
-開発用: `seed-dev.ts`（= `npm run db:seed`, **本番では使わない**）/ `dev-issue-token.ts` / `dev-unconfirm.ts`
-マイグレーション（ガード付き `CONFIRM_MIGRATE=YES`・冪等・追加のみ）: `migrate-invite-requests.ts`（`invite_requests` 作成＋列追加）/ `migrate-invite-code-soft-delete.ts`（`invite_codes.deleted_at` 追加）。`.dev.vars` の `DATABASE_URL`=本番 Neon を指すので**実行＝本番に適用**。
+開発用: `seed-dev.ts`（= `npm run db:seed`, **本番では使わない**）/ `dev-issue-token.ts` / `dev-unconfirm.ts` / `dev-test-otp.ts`（OTP の lib+repo を DB 込みで網羅テスト＝成功/不一致/使用済み/再送失効/5回ロック/email バインド。テスト行は毎回クリーンアップ。**本番では使わない**）
+マイグレーション（ガード付き `CONFIRM_MIGRATE=YES`・冪等・追加のみ）: `migrate-invite-requests.ts`（`invite_requests` 作成＋列追加）/ `migrate-invite-code-soft-delete.ts`（`invite_codes.deleted_at` 追加）/ `migrate-otp-attempt-count.ts`（`magic_link_tokens.attempt_count` 追加＝OTP 用・**本番適用済み**）。`.env`/`.dev.vars` の `DATABASE_URL`=本番 Neon を指すので**実行＝本番に適用**。
 - neon-http クライアントは `sql.query(...)` 非対応。タグ付きテンプレート ``sql`...` `` を使う。
 
 ## 作業上の約束（このプロジェクトでの教訓）

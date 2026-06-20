@@ -2,16 +2,18 @@
 
 import { useEffect, useState, type FormEvent } from 'react'
 
-type State = 'idle' | 'submitting' | 'sent' | 'error'
+type Step = 'email' | 'code'
+type State = 'idle' | 'submitting' | 'error'
 
 const RESEND_COOLDOWN_SEC = 60
 
 export function LoginForm() {
+  const [step, setStep] = useState<Step>('email')
   const [email, setEmail] = useState('')
   const [inviteCode, setInviteCode] = useState('')
+  const [code, setCode] = useState('')
   const [state, setState] = useState<State>('idle')
   const [errorMessage, setErrorMessage] = useState('')
-  const [sentTo, setSentTo] = useState('')
   const [cooldown, setCooldown] = useState(0)
 
   // 再送信クールダウンのカウントダウン
@@ -21,14 +23,15 @@ export function LoginForm() {
     return () => clearTimeout(t)
   }, [cooldown])
 
-  async function submit(e: FormEvent) {
+  // ===== Step1: コード送信（メール入力）=====
+  async function requestCode(e: FormEvent) {
     e.preventDefault()
     if (state === 'submitting') return
     setState('submitting')
     setErrorMessage('')
 
     try {
-      const res = await fetch('/api/v1/auth/magic-link', {
+      const res = await fetch('/api/v1/auth/otp/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -39,8 +42,9 @@ export function LoginForm() {
       const data = (await res.json().catch(() => ({}))) as { error?: string }
 
       if (res.ok) {
-        setSentTo(email)
-        setState('sent')
+        setStep('code')
+        setState('idle')
+        setCode('')
         setCooldown(RESEND_COOLDOWN_SEC)
       } else if (res.status === 400 && data.error === 'invite_code_required') {
         setErrorMessage('新規ご利用には招待コードが必要です。')
@@ -61,72 +65,156 @@ export function LoginForm() {
     }
   }
 
-  async function resend() {
-    if (cooldown > 0) return
-    // 同じ宛先・招待コードで再送
+  // ===== Step2: コード検証 =====
+  async function verifyCode(e: FormEvent) {
+    e.preventDefault()
+    if (state === 'submitting') return
     setState('submitting')
+    setErrorMessage('')
+
     try {
-      const res = await fetch('/api/v1/auth/magic-link', {
+      const res = await fetch('/auth/otp-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
+      })
+      const data = (await res.json().catch(() => ({}))) as {
+        ok?: boolean
+        isAdmin?: boolean
+        error?: string
+      }
+
+      if (res.ok && data.ok) {
+        // セッション Cookie を確実に反映させるためフルナビゲーション
+        window.location.assign(data.isAdmin ? '/projects/invites' : '/projects')
+        return
+      }
+      if (res.status === 429 || data.error === 'too_many_attempts') {
+        setErrorMessage('入力回数の上限に達しました。コードを再送してください。')
+      } else {
+        setErrorMessage('コードが正しくないか、有効期限が切れています。')
+      }
+      setState('error')
+    } catch {
+      setErrorMessage('通信エラーが発生しました。')
+      setState('error')
+    }
+  }
+
+  // 同じ宛先・招待コードでコードを再送（旧コードは失効し新コードのみ有効）
+  async function resend() {
+    if (cooldown > 0 || state === 'submitting') return
+    setState('submitting')
+    setErrorMessage('')
+    try {
+      const res = await fetch('/api/v1/auth/otp/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: sentTo,
+          email,
           invite_code: inviteCode || undefined,
         }),
       })
-      if (res.ok) {
-        setState('sent')
-        setCooldown(RESEND_COOLDOWN_SEC)
-      } else {
-        setState('sent') // 失敗しても送信済み画面は維持（連打させない）
-        setCooldown(RESEND_COOLDOWN_SEC)
+      setState('idle')
+      setCode('')
+      setCooldown(RESEND_COOLDOWN_SEC)
+      if (!res.ok) {
+        // 失敗しても連打させない（クールダウンは張る）
+        setErrorMessage('再送に失敗しました。少し待って再度お試しください。')
+        setState('error')
       }
     } catch {
-      setState('sent')
+      setState('idle')
       setCooldown(RESEND_COOLDOWN_SEC)
     }
   }
 
-  // ===== 送信完了画面（C: 宛先表示 / B: クールダウン）=====
-  if (state === 'sent') {
+  function backToEmail() {
+    setStep('email')
+    setState('idle')
+    setErrorMessage('')
+    setCode('')
+    setCooldown(0)
+  }
+
+  // ===== Step2 画面（コード入力）=====
+  if (step === 'code') {
     return (
-      <div className="text-center py-4">
-        <div className="text-4xl mb-3">📧</div>
-        <div className="neo-headline text-base text-neo-fg mb-2">
-          メールを確認してください
-        </div>
-        <div className="neo-body text-sm text-neo-fg-soft leading-relaxed mb-1">
-          <span className="neo-code text-neo-fg break-all">{sentTo}</span>
-          <br />
-          宛にログイン用リンクを送信しました。
-        </div>
-        <div className="neo-body text-sm text-neo-fg-soft leading-relaxed">
-          メール内のリンクを開くとログインが完了します。
-          <br />
-          リンクは <strong>15 分間</strong> 有効です。
+      <form onSubmit={verifyCode} className="space-y-4">
+        <div className="text-center">
+          <div className="text-4xl mb-3">🔢</div>
+          <div className="neo-headline text-base text-neo-fg mb-2">
+            ログインコードを入力
+          </div>
+          <div className="neo-body text-sm text-neo-fg-soft leading-relaxed">
+            <span className="neo-code text-neo-fg break-all">{email}</span>
+            <br />
+            宛に <strong>6 桁のコード</strong> を送信しました。
+            <br />
+            このブラウザで入力してください（<strong>10 分間</strong>有効）。
+          </div>
         </div>
 
-        <div className="mt-6 pt-5 border-t-2 border-neo-track">
-          <div className="neo-body text-xs text-neo-fg-soft mb-2">メールが届きませんか？</div>
-          <button
-            type="button"
-            onClick={resend}
-            disabled={cooldown > 0}
-            className="neo-code text-sm text-neo-primary hover:underline disabled:text-neo-fg-faint disabled:no-underline disabled:cursor-not-allowed"
-          >
-            {cooldown > 0 ? `再送信できます（あと ${cooldown} 秒）` : 'リンクを再送信する'}
-          </button>
+        <div>
+          <input
+            type="text"
+            required
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            pattern="\d{6}"
+            maxLength={6}
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+            placeholder="000000"
+            disabled={state === 'submitting'}
+            autoFocus
+            className="neo-input neo-code text-center text-2xl tracking-[0.4em]"
+          />
         </div>
-      </div>
+
+        {state === 'error' && (
+          <div className="neo-body text-sm text-neo-danger text-center">{errorMessage}</div>
+        )}
+
+        <button
+          type="submit"
+          disabled={state === 'submitting' || code.length !== 6}
+          className="neo-btn w-full bg-neo-primary text-neo-on-primary rounded-xl py-3"
+        >
+          {state === 'submitting' ? '確認中...' : 'ログイン'}
+        </button>
+
+        <div className="pt-4 border-t-2 border-neo-track text-center space-y-2">
+          <div>
+            <button
+              type="button"
+              onClick={resend}
+              disabled={cooldown > 0 || state === 'submitting'}
+              className="neo-code text-sm text-neo-primary hover:underline disabled:text-neo-fg-faint disabled:no-underline disabled:cursor-not-allowed"
+            >
+              {cooldown > 0 ? `コードを再送できます（あと ${cooldown} 秒）` : 'コードを再送する'}
+            </button>
+          </div>
+          <div>
+            <button
+              type="button"
+              onClick={backToEmail}
+              className="neo-body text-xs text-neo-fg-faint hover:text-neo-fg-soft hover:underline"
+            >
+              メールアドレスを変更する
+            </button>
+          </div>
+        </div>
+      </form>
     )
   }
 
-  // ===== 入力画面（A: メール経由であることを予告）=====
+  // ===== Step1 画面（メール入力）=====
   return (
-    <form onSubmit={submit} className="space-y-4">
+    <form onSubmit={requestCode} className="space-y-4">
       <div className="bg-neo-primary-soft neo-border-thin rounded-xl p-3 neo-body text-xs text-neo-on-primary-soft leading-relaxed">
-        💡 入力したアドレスに<strong>ログイン用リンク</strong>をメールでお送りします。
-        メール内のリンクを開くとログインできます。
+        💡 入力したアドレスに<strong>ログインコード</strong>をメールでお送りします。
+        作業中のこのブラウザでコードを入力するとログインできます。
         <br />
         （パスワードは不要です）
       </div>
@@ -172,7 +260,7 @@ export function LoginForm() {
         disabled={state === 'submitting'}
         className="neo-btn w-full bg-neo-primary text-neo-on-primary rounded-xl py-3"
       >
-        {state === 'submitting' ? '送信中...' : 'ログインリンクをメールで受け取る'}
+        {state === 'submitting' ? '送信中...' : 'ログインコードをメールで受け取る'}
       </button>
     </form>
   )

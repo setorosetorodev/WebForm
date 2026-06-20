@@ -174,27 +174,28 @@ type UnsubscribedParams = {
   projectName: string
 }
 
-type MagicLinkParams = {
+type OtpParams = {
   to: string
-  verifyUrl: string
+  code: string
 }
 
-export async function sendMagicLinkEmail(
+/** 開発者ログイン用の 6 桁 OTP コードをメール送信する（Magic Link 置き換え・neo ブランド）。 */
+export async function sendOtpEmail(
   ctx: EmailContext,
-  params: MagicLinkParams,
+  params: OtpParams,
 ): Promise<void> {
   const resend = new Resend(ctx.apiKey)
 
   const { error } = await resend.emails.send({
     from: ctx.fromAddress,
     to: params.to,
-    subject: 'Launchia へのログインリンク',
-    text: renderMagicLinkText(params),
-    html: renderMagicLinkHtml(params),
+    subject: `Launchia ログインコード: ${params.code}`,
+    text: renderOtpText(params),
+    html: renderOtpHtml(params),
   })
 
   if (error) {
-    throw new Error(`sendMagicLinkEmail failed: ${JSON.stringify(error)}`)
+    throw new Error(`sendOtpEmail failed: ${JSON.stringify(error)}`)
   }
 }
 
@@ -467,14 +468,16 @@ function renderUnsubscribedHtml(params: UnsubscribedParams): string {
   })
 }
 
-function renderMagicLinkText(params: MagicLinkParams): string {
+function renderOtpText(params: OtpParams): string {
   return [
-    'Launchia へのログインリンクです。',
+    'Launchia のログインコードです。',
     '',
-    'こちらをクリックしてログインしてください:',
-    params.verifyUrl,
+    '作業中のブラウザの入力欄に、次のコードを入力してください:',
     '',
-    '※ このリンクは 15 分間のみ有効です。',
+    `    ${params.code}`,
+    '',
+    '※ このコードは 10 分間のみ有効です。',
+    '※ 入力を 5 回間違えると無効になります（その場合は再送してください）。',
     '※ 心当たりがない場合は、このメールを無視してください。',
     '',
     '---',
@@ -482,15 +485,18 @@ function renderMagicLinkText(params: MagicLinkParams): string {
   ].join('\n')
 }
 
-function renderMagicLinkHtml(params: MagicLinkParams): string {
-  const url = escapeAttr(params.verifyUrl)
+function renderOtpHtml(params: OtpParams): string {
+  const code = escapeHtml(params.code)
   return neoMailShell({
-    title: 'Launchia ログインリンク',
-    heading: 'ログインリンク',
+    title: 'Launchia ログインコード',
+    heading: 'ログインコード',
     bodyHtml: `
-      <p style="margin:0 0 20px;color:${NEO_MAIL.fgSoft};">Launchia へのログインリンクです。下のボタンから進んでください。</p>
-      <p style="margin:0 0 20px;text-align:center;">${neoMailButton(url, 'Launchia にログイン')}</p>
-      <p style="margin:0;color:${NEO_MAIL.fgFaint};font-size:13px;">※ このリンクは 15 分間のみ有効です。</p>
+      <p style="margin:0 0 20px;color:${NEO_MAIL.fgSoft};">作業中のブラウザの入力欄に、次のコードを入力してください。</p>
+      <div style="margin:0 0 20px;text-align:center;">
+        <span style="display:inline-block;font-family:'Courier New',monospace;font-weight:800;font-size:34px;letter-spacing:0.28em;color:${NEO_MAIL.ink};background:${NEO_MAIL.bg};border:3px solid ${NEO_MAIL.ink};border-radius:12px;box-shadow:4px 4px 0 0 ${NEO_MAIL.ink};padding:16px 12px 16px 24px;">${code}</span>
+      </div>
+      <p style="margin:0;color:${NEO_MAIL.fgFaint};font-size:13px;">※ このコードは 10 分間のみ有効です。</p>
+      <p style="margin:6px 0 0;color:${NEO_MAIL.fgFaint};font-size:13px;">※ 入力を 5 回間違えると無効になります（その場合は再送してください）。</p>
       <p style="margin:6px 0 0;color:${NEO_MAIL.fgFaint};font-size:13px;">※ 心当たりがない場合は、このメールを無視してください。</p>
     `,
   })

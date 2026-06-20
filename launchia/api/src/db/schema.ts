@@ -38,6 +38,8 @@ export const magicLinkTokens = pgTable(
     tokenHash: bytea('token_hash').notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
     usedAt: timestamp('used_at', { withTimezone: true }),
+    // OTP コード入力の失敗回数。5 回でロック（ブルートフォース対策）。
+    attemptCount: integer('attempt_count').notNull().default(0),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => ({

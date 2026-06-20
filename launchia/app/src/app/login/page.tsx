@@ -22,7 +22,7 @@ export default function LoginPage() {
         <div className="neo-body text-xs text-neo-fg-faint text-center mt-8 leading-relaxed">
           パスワードは不要です。
           <br />
-          メールに届くリンクをクリックしてログインします。
+          メールに届くコードを入力してログインします。
           <br />
           新規の方は招待コードが必要です。
         </div>

@@ -3,25 +3,24 @@ import { deleteCookie, setCookie } from 'hono/cookie'
 import { z } from 'zod'
 import type { Env } from '../env'
 import { createDbClient } from '../db/client'
-import { createEmailContext, sendMagicLinkEmail } from '../lib/email'
+import { createEmailContext, sendOtpEmail } from '../lib/email'
 import { SESSION_COOKIE_NAME, createSessionValue, sessionMaxAge } from '../lib/session'
-import { generateToken, hashToken } from '../lib/token'
-import {
-  consumeMagicLinkToken,
-  createMagicLinkToken,
-} from '../repositories/auth'
+import { generateOtpCode, hashOtpCode } from '../lib/token'
+import { createOtpToken, verifyOtpToken } from '../repositories/auth'
 import { consumeInviteCode, findValidInviteCode } from '../repositories/invites'
 import { createUser, findUserByEmail, findUserById } from '../repositories/users'
 import { requireAuth } from '../middleware/auth'
 
 const authRoutes = new Hono<{ Bindings: Env }>()
 
-const magicLinkSchema = z.object({
+const otpRequestSchema = z.object({
   email: z.string().email(),
   invite_code: z.string().optional(),
 })
 
-authRoutes.post('/magic-link', async (c) => {
+// 6 桁 OTP コードを発行してメール送信する（旧 /magic-link の置き換え）。
+// 招待コードゲーティングは旧仕様を踏襲: 既存ユーザでなければ有効な招待コード必須。
+authRoutes.post('/otp/request', async (c) => {
   let body: unknown
   try {
     body = await c.req.json()
@@ -29,7 +28,7 @@ authRoutes.post('/magic-link', async (c) => {
     return c.json({ error: 'invalid_json' }, 400)
   }
 
-  const parsed = magicLinkSchema.safeParse(body)
+  const parsed = otpRequestSchema.safeParse(body)
   if (!parsed.success) {
     return c.json({ error: 'validation_failed' }, 400)
   }
@@ -51,40 +50,59 @@ authRoutes.post('/magic-link', async (c) => {
     await consumeInviteCode(db, invite.id)
   }
 
-  const token = generateToken()
-  const tokenHash = await hashToken(token)
-  await createMagicLinkToken(db, {
-    userId: user.id,
-    email,
-    tokenHash,
-  })
-
-  const verifyUrl = `${c.env.APP_BASE_URL}/auth/verify?token=${encodeURIComponent(token)}`
+  const code = generateOtpCode()
+  const codeHash = await hashOtpCode(c.env.SESSION_SECRET, email, code)
+  await createOtpToken(db, { userId: user.id, email, codeHash })
 
   try {
     const emailCtx = createEmailContext(c.env)
-    await sendMagicLinkEmail(emailCtx, { to: email, verifyUrl })
+    await sendOtpEmail(emailCtx, { to: email, code })
   } catch (err) {
-    console.error('Failed to send magic link email:', err)
+    console.error('Failed to send OTP email:', err)
   }
 
   return c.json({ sent: true })
 })
 
-authRoutes.get('/verify', async (c) => {
-  const token = c.req.query('token')
-  if (!token) {
-    return c.json({ error: 'token_required' }, 400)
+const otpVerifySchema = z.object({
+  email: z.string().email(),
+  code: z.string().regex(/^\d{6}$/),
+})
+
+// OTP コードを検証し、成功したらセッション Cookie を発行する（旧 /verify の置き換え）。
+authRoutes.post('/otp/verify', async (c) => {
+  let body: unknown
+  try {
+    body = await c.req.json()
+  } catch {
+    return c.json({ error: 'invalid_json' }, 400)
   }
 
+  const parsed = otpVerifySchema.safeParse(body)
+  if (!parsed.success) {
+    // 6 桁でない等。攻撃者に内部状態を漏らさないため汎用エラー扱い。
+    return c.json({ error: 'invalid_code' }, 401)
+  }
+
+  const { email, code } = parsed.data
   const db = createDbClient(c.env.DATABASE_URL)
-  const tokenHash = await hashToken(token)
-  const magicToken = await consumeMagicLinkToken(db, tokenHash)
-  if (!magicToken || !magicToken.userId) {
-    return c.json({ error: 'invalid_or_expired_token' }, 401)
+  const codeHash = await hashOtpCode(c.env.SESSION_SECRET, email, code)
+  const result = await verifyOtpToken(db, { email, codeHash })
+
+  if (result.status === 'locked') {
+    return c.json({ error: 'too_many_attempts' }, 429)
+  }
+  if (result.status !== 'ok') {
+    // invalid / expired をまとめて汎用化（コード総当たりのヒントを与えない）。
+    return c.json({ error: 'invalid_code' }, 401)
   }
 
-  const sessionValue = await createSessionValue(c.env, magicToken.userId)
+  const userId = result.token.userId
+  if (!userId) {
+    return c.json({ error: 'invalid_code' }, 401)
+  }
+
+  const sessionValue = await createSessionValue(c.env, userId)
   setCookie(c, SESSION_COOKIE_NAME, sessionValue, {
     httpOnly: true,
     secure: c.env.ENVIRONMENT === 'production',
@@ -93,10 +111,10 @@ authRoutes.get('/verify', async (c) => {
     maxAge: sessionMaxAge(),
   })
 
-  const verifiedUser = await findUserById(db, magicToken.userId)
+  const verifiedUser = await findUserById(db, userId)
   return c.json({
     ok: true,
-    userId: magicToken.userId,
+    userId,
     isAdmin: verifiedUser?.isAdmin ?? false,
   })
 })
