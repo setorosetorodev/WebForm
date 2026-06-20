@@ -56,7 +56,7 @@
 ### 次にやること = **Phase 2**
 着手先は `docs/20260529_launchia_phase2_design_notes.md`。候補（優先順は要相談）:
 1. エンドユーザー**マイページ**（メアド名寄せで全登録・順位を一覧）
-2. ~~**OTP コードログイン**（Magic Link のブラウザ跨ぎ/プリフェッチ問題を解決）~~ → **2026-06-20 実装完了**（下記）。**未デプロイ**。
+2. ~~**OTP コードログイン**（Magic Link のブラウザ跨ぎ/プリフェッチ問題を解決）~~ → **2026-06-20 実装＋本番デプロイ完了**（下記）。E2E 確認済み。
 3. **セッション管理画面**（要 stateful `launchia_sessions` テーブル）
 4. 登録解除の**二段階確認**
 5. **レート制限 + Cloudflare Turnstile**（招待コードのブルートフォース対策にも。現状コードは 32⁸≈1.1兆・CSPRNG で実質推測不可だが、`/auth/magic-link` にアプリ側レート制限が無い）
@@ -66,8 +66,9 @@
 - **2026-06-20**: **OTP コードログイン実装完了（Magic Link を廃止＝コードのみに置き換え）**。Phase2 項目2。詳細は `docs/20260529_..._phase2_design_notes.md` §2「実装（2026-06-20）」が正。
   - 仕様: **6 桁数字・CSPRNG（剰余バイアス除去）・TTL 10 分・単回使用・5 回失敗でロック（`attempt_count`）**＋ 60 秒再送クールダウン。再送で旧コード失効・最新のみ有効。保存は **HMAC-SHA256(SESSION_SECRET, email+":"+code)**（`token_hash` 流用、列 `attempt_count` 追加マイグレーション＝**本番適用済み**）。
   - API: `POST /auth/otp/request`・`/auth/otp/verify` に差し替え、旧 `GET /verify`・`POST /magic-link` 撤去。app は login 2 段階 UI 化＋`auth/otp-verify` route（Set-Cookie 中継）、旧 `auth/verify` 削除。
-  - 検証済み: lib+repo の DB 込み網羅テスト全 pass（`scripts/dev-test-otp.ts`）＋ HTTP ゲーティング/verify の status 確認。**残: ① 実機ブラウザ E2E（成功パスのセッション着地・OTP 自動入力）② デプロイ**。
-  - **⚠️ デプロイ順序の罠**: 新 app（OTP UI）と旧 api（magic-link のみ）が混在するとログインが壊れる。**api を先に `wrangler deploy` → 直後に app push**（OpenNext ビルド中の数分はログイン不可の窓ができる。30日セッションなので影響は新規ログインのみ）。`SESSION_SECRET` は既設のため新規 Secret 不要。
+  - **本番デプロイ完了（2026-06-20）**: api `wrangler deploy`（ver `993f06d6`）→ app push（commit `d993504`）の順で反映。本番 E2E 確認済み（dev で成功パス＝コード入力→セッション→着地／本番で `setorosetorosetoro@gmail.com` に実メール着信）。検証は lib+repo の DB 込み網羅テスト全 pass（`scripts/dev-test-otp.ts`）＋ HTTP ゲーティング/verify status。
+  - **⚠️ デプロイ順序の罠（次回の教訓）**: 新 app（OTP UI）と旧 api（magic-link のみ）が混在するとログインが壊れる。**api を先に `wrangler deploy` → 直後に app push**（OpenNext ビルド中の~90秒〜数分はログイン不可の窓。30日セッションなので影響は新規ログインのみ）。`SESSION_SECRET` は既設のため新規 Secret 不要。
+  - **dev のメール制約**: dev は `onboarding@resend.dev`（Resend テストモード）で **`setorosetorodev@gmail.com` 宛にしか送れない**（他宛は 403）。他アドレスで dev ログインを通すには `scripts/dev-issue-otp.ts <email>` でコード発行。本番（`noreply@launchia.net`）は全宛先に届く。
 
 その他の小タスク:
 - ~~DMARC を数日後 `p=none`→`p=quarantine` に引き上げ。~~ → **2026-06-03 完了**（権威/公開とも反映確認。次に上げるなら `p=reject`）。
@@ -85,7 +86,7 @@
 ## 運用スクリプト（`launchia/api/scripts/`）
 読み取り系: `check-entries.ts`（直近登録者）/ `show-invites.ts`（招待コード一覧）/ `check-magic-tokens.ts`
 破壊的: `reset-db.ts`（`launchia_*` 全削除＋招待 seed。ガード付き。詳細は運用メモ参照）
-開発用: `seed-dev.ts`（= `npm run db:seed`, **本番では使わない**）/ `dev-issue-token.ts` / `dev-unconfirm.ts` / `dev-test-otp.ts`（OTP の lib+repo を DB 込みで網羅テスト＝成功/不一致/使用済み/再送失効/5回ロック/email バインド。テスト行は毎回クリーンアップ。**本番では使わない**）
+開発用: `seed-dev.ts`（= `npm run db:seed`, **本番では使わない**）/ `dev-issue-token.ts` / `dev-unconfirm.ts` / `dev-test-otp.ts`（OTP の lib+repo を DB 込みで網羅テスト＝成功/不一致/使用済み/再送失効/5回ロック/email バインド。テスト行は毎回クリーンアップ。**本番では使わない**）/ `dev-issue-otp.ts <email>`（dev は Resend テストモードで `setorosetorodev@gmail.com` 宛にしか送れないため、他宛先で OTP ログインを通すためにコードを発行・表示する開発用ヘルパー。**本番では使わない**）
 マイグレーション（ガード付き `CONFIRM_MIGRATE=YES`・冪等・追加のみ）: `migrate-invite-requests.ts`（`invite_requests` 作成＋列追加）/ `migrate-invite-code-soft-delete.ts`（`invite_codes.deleted_at` 追加）/ `migrate-otp-attempt-count.ts`（`magic_link_tokens.attempt_count` 追加＝OTP 用・**本番適用済み**）。`.env`/`.dev.vars` の `DATABASE_URL`=本番 Neon を指すので**実行＝本番に適用**。
 - neon-http クライアントは `sql.query(...)` 非対応。タグ付きテンプレート ``sql`...` `` を使う。
 
